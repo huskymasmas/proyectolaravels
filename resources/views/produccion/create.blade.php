@@ -1,13 +1,14 @@
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
 <div class="container">
     <h2>Registrar Producción</h2>
@@ -28,8 +29,8 @@
 
     <form action="{{ route('produccion.store') }}" method="POST">
         @csrf
-        <div class="mb-3">
-            <label for="id_Proyecto" class="form-label">Proyecto</label>
+        <div>
+            <label for="id_Proyecto">Proyecto</label>
             <select name="id_Proyecto" class="form-select" required>
                 <option value="">Seleccione...</option>
                 @foreach($proyectos as $p)
@@ -39,7 +40,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="id_Dosificacion" class="form-label">Tipo de Dosificación</label>
+            <label for="id_Dosificacion" >Tipo de Dosificación</label>
             <select name="id_Dosificacion" class="form-select" required>
                 <option value="">Seleccione...</option>
                 @foreach($dosificaciones as $d)
@@ -49,7 +50,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="id_Planta" class="form-label">Planta</label>
+            <label for="id_Planta" >Planta</label>
             <select name="id_Planta" class="form-select" required>
                 <option value="">Seleccione...</option>
                 @foreach($plantas as $pl)
@@ -59,7 +60,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="Fecha" class="form-label">Fecha</label>
+            <label for="Fecha" >Fecha</label>
             <input type="date" name="Fecha" class="form-control" required>
         </div>
 
@@ -93,27 +94,28 @@
         <br>
     </form>
 </div>
-<table border="1">
+<div >
+<table border="1" class="table" >
     <tr>
-        <th>Fecha</th>
-        <th>Proyecto</th>
-        <th>Planta</th>
-        <th>Volumen (m³)</th>
-        <th>Cemento (kg)</th>
-        <th>Arena (m³)</th>
-                <th>Piedrín (m³)</th>
-                <th>Aditivo (L)</th>
+        <th  scope="col">Fecha</th>
+        <th  scope="col" >Proyecto</th>
+        <th  scope="col" >Planta</th>
+        <th  scope="col" >Volumen (m³)</th>
+        <th  scope="col" >Cemento (kg)</th>
+        <th  scope="col" >Arena (m³)</th>
+                <th scope="col" >Piedrín (m³)</th>
+                <th scope="col" >Aditivo (L)</th>
     </tr>
     @foreach($producciones as $r)
     <tr>
-          <td>{{ $r->Fecha }}</td>
-                <td>{{ $r->proyecto->Nombre ?? '' }}</td>
-                <td>{{ $r->planta->Nombre ?? '' }}</td>
-                <td>{{ $r->Volumen_m3 }}</td>
-                <td>{{ $r->Cemento_kg }}</td>
-                <td>{{ $r->Arena_m3 }}</td>
-                <td>{{ $r->Piedrin_m3 }}</td>
-                <td>{{ $r->Aditivo_l }}</td>
+          <td >{{ $r->Fecha }}</td>
+                <td >{{ $r->proyecto->Nombre ?? '' }}</td>
+                <td  >{{ $r->planta->Nombre ?? '' }}</td>
+                <td  >{{ $r->Volumen_m3 }}</td>
+                <td  >{{ $r->Cemento_kg }}</td>
+                <td >{{ $r->Arena_m3 }}</td>
+                <td  >{{ $r->Piedrin_m3 }}</td>
+                <td  >{{ $r->Aditivo_l }}</td>
         <td>
             <a href="{{ route('produccion.edit', $r->id_Produccion) }}">Editar</a>
            
@@ -121,5 +123,6 @@
     </tr>
     @endforeach
 </table>
-</body>
+</div>
+  </body>
 </html>
