@@ -1,5 +1,5 @@
 
-
+@include('header')
 <div class="container">
     <h2>Reporte de Producción</h2>
     
@@ -13,9 +13,8 @@
             <label>Hasta</label>
             <input type="date" name="hasta" value="{{ $hasta }}" class="form-control">
         </div>
-        <div class="col-md-3">
-            <label>Planta</label>
-            <div class="col-md-3">
+
+    <div class="col-md-3">
     <label>Planta</label>
     <select name="id_planta" class="form-select">
         <option value="">Todas</option>
@@ -39,14 +38,16 @@
     </select>
 </div>
         </div>
-        <div class="col-md-3 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary">Filtrar</button>
+        <div >
+            <center><button type="submit" class="btn btn-primary">Filtrar</button></center>
+            <br>
         </div>
     </form>
            <div class="col-md-3">
         
         </div>
-    <table border="1">
+    <div class="col-md-10 mx-auto">
+    <table border="1"  class="table table table-striped">
         <thead>
             <tr>
                 <th>Fecha</th>
@@ -107,3 +108,6 @@
         {{ $registros->links() }}
     </div>
 </div>
+  </div>
+  </body>
+</html>

@@ -1,3 +1,4 @@
+@include('header')
 <h1>Editar Producción</h1>
 
 <form action="{{ route('produccion.update', $produccion->id_Produccion) }}" method="POST">
@@ -10,5 +11,7 @@
     Piedrin (m3): <input type="text" name="Piedrin_m3" value="{{ $produccion->Piedrin_m3 }}"><br>
     Aditivo (l): <input type="text" name="Aditivo_l" value="{{ $produccion->Aditivo_l }}"><br>
 
-    <button type="submit">Actualizar</button>
+    <button type="submit" class =  "btn btn-primary">Actualizar</button>
 </form>
+  </body>
+</html>

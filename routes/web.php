@@ -5,7 +5,7 @@ use App\Http\Controllers\ProduccionController;
 
 
 Route::get('/', function () {
-    return view('inicio');
+    return view('index');
 });
 
 
