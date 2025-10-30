@@ -111,7 +111,7 @@ public function reporte(Request $request)
     $m3PerHour = $totalHours > 0 ? $totalesGlobales->total_m3 / $totalHours : null;
 
     return view('produccion.reporte', [
-        'registros' => $registros,
+        'registros' => $registros, 
         'totales' => [
             'total_m3' => $totalesGlobales->total_m3,
             'total_hours' => $totalHours,

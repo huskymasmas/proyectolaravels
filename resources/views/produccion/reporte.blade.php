@@ -44,9 +44,9 @@
         </div>
     </form>
            <div class="col-md-3">
-            <button type="submit" class="btn btn-primary">Todos los datos</button>
+        
         </div>
-    <table class="table table-striped table-sm">
+    <table border="1">
         <thead>
             <tr>
                 <th>Fecha</th>
@@ -75,6 +75,33 @@
         </tbody>
     </table>
     
+<div class="card mt-4">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">Totales del período</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>Volumen total (m³):</strong> {{ number_format($totales['total_m3'], 2) }}
+            </div>
+            <div class="col-md-4">
+                <strong>Horas totales:</strong> {{ number_format($totales['total_hours'], 2) }}
+            </div>
+            <div class="col-md-4">
+                <strong>Producción promedio (m³/h):</strong> 
+                {{ $totales['m3_per_hour'] ? number_format($totales['m3_per_hour'], 2) : 'N/A' }}
+            </div>
+        </div>
+
+        <h6 class="mt-3">Consumo total de materiales:</h6>
+        <ul class="list-group">
+            <li class="list-group-item">Cemento (kg): {{ number_format($totales['consumo_real']['Cemento_kg'], 2) }}</li>
+            <li class="list-group-item">Arena (m³): {{ number_format($totales['consumo_real']['Arena_m3'], 3) }}</li>
+            <li class="list-group-item">Piedrín (m³): {{ number_format($totales['consumo_real']['Piedrin_m3'], 3) }}</li>
+            <li class="list-group-item">Aditivo (L): {{ number_format($totales['consumo_real']['Aditivo_l'], 2) }}</li>
+        </ul>
+    </div>
+</div>
 
     <div class="d-flex justify-content-center">
         {{ $registros->links() }}

@@ -1,0 +1,80 @@
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+#
+# Initial commit
+#
+# Changes to be committed:
+#	new file:   .editorconfig
+#	new file:   .env.example
+#	new file:   .gitattributes
+#	new file:   .gitignore
+#	new file:   README.md
+#	new file:   app/Http/Controllers/Controller.php
+#	new file:   app/Http/Controllers/ProduccionController.php
+#	new file:   app/Models/Dosificacion.php
+#	new file:   app/Models/User.php
+#	new file:   app/Models/Vale.php
+#	new file:   app/Models/planta.php
+#	new file:   app/Models/produccion.php
+#	new file:   app/Models/proyecto.php
+#	new file:   app/Providers/AppServiceProvider.php
+#	new file:   artisan
+#	new file:   bootstrap/app.php
+#	new file:   bootstrap/cache/.gitignore
+#	new file:   bootstrap/providers.php
+#	new file:   composer.json
+#	new file:   composer.lock
+#	new file:   config/app.php
+#	new file:   config/auth.php
+#	new file:   config/cache.php
+#	new file:   config/database.php
+#	new file:   config/filesystems.php
+#	new file:   config/logging.php
+#	new file:   config/mail.php
+#	new file:   config/queue.php
+#	new file:   config/services.php
+#	new file:   config/session.php
+#	new file:   database/.gitignore
+#	new file:   database/factories/UserFactory.php
+#	new file:   database/migrations/0001_01_01_000000_create_users_table.php
+#	new file:   database/migrations/0001_01_01_000001_create_cache_table.php
+#	new file:   database/migrations/0001_01_01_000002_create_jobs_table.php
+#	new file:   database/seeders/DatabaseSeeder.php
+#	new file:   package-lock.json
+#	new file:   package.json
+#	new file:   phpunit.xml
+#	new file:   public/.htaccess
+#	new file:   public/favicon.ico
+#	new file:   public/index.php
+#	new file:   public/robots.txt
+#	new file:   resources/css/app.css
+#	new file:   resources/js/app.js
+#	new file:   resources/js/bootstrap.js
+#	new file:   resources/views/inicio.blade.php
+#	new file:   resources/views/layouts/app.blade.php
+#	new file:   resources/views/produccion/create.blade.php
+#	new file:   resources/views/produccion/edit.blade.php
+#	new file:   resources/views/produccion/reporte.blade.php
+#	new file:   resources/views/produccion/store.blede.php
+#	new file:   resources/views/reporte.blade.php
+#	new file:   resources/views/welcome.blade.php
+#	new file:   routes/console.php
+#	new file:   routes/web.php
+#	new file:   storage/app/.gitignore
+#	new file:   storage/app/private/.gitignore
+#	new file:   storage/app/public/.gitignore
+#	new file:   storage/framework/.gitignore
+#	new file:   storage/framework/cache/.gitignore
+#	new file:   storage/framework/cache/data/.gitignore
+#	new file:   storage/framework/sessions/.gitignore
+#	new file:   storage/framework/testing/.gitignore
+#	new file:   storage/framework/views/.gitignore
+#	new file:   storage/logs/.gitignore
+#	new file:   tests/Feature/ExampleTest.php
+#	new file:   tests/TestCase.php
+#	new file:   tests/Unit/ExampleTest.php
+#	new file:   vite.config.js
+
