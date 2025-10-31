@@ -9,9 +9,12 @@ class Dosificacion extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'Tipo','Cemento','Arena','Pedrin','Aditivo','Nota','Estado',
+        'id_Tipo_dosificacion','Cemento','Arena','Pedrin','Aditivo','Nota','Estado',
         'Creado_por','Actualizado_por','Fecha_creacion','Fecha_actualizacion'
     ];
 
-    public function creador(){ return $this->belongsTo(Usuario::class, 'Creado_por'); }
+     public function Tipo_dosificador()
+    {
+        return $this->belongsTo(Tipo_dosificador::class, 'id_Tipo_dosificacion');
+    }
 }

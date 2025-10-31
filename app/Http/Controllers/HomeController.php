@@ -23,6 +23,17 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        //redirecciona segun su contenido a cada rol 
+        $user = \Auth::user();
+        if($user->hasRole('admin')){
+            return redirect('admin/inicio');
+
+        }elseif($user->hasRole('editor')){
+            return redirect('editor/inicio');
+
+        }else{
+            return redirect('/');
+        }
+        //return view('home');
     }
 }

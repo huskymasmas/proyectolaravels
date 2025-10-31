@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // 👈 Importar Auth
 use App\Models\Proyecto;
 use App\Models\ProyectoDetalle;
 
@@ -30,22 +31,24 @@ class ProyectoController extends Controller
             'Ubicacion' => 'nullable|string|max:255',
         ]);
 
+        // 🧩 Crear detalle del proyecto
         $detalle = ProyectoDetalle::create([
             'Descripcion' => $request->Descripcion,
             'Ubicacion' => $request->Ubicacion,
             'Estado' => 1,
-            'Creado_por' => 1,
-            'Actualizado_por' => 1,
+            'Creado_por' => Auth::id(), // 👈 Usuario autenticado
+            'Actualizado_por' => Auth::id(),
             'Fecha_creacion' => now(),
             'Fecha_actualizacion' => now()
         ]);
 
+        // 🧩 Crear proyecto principal
         $proyecto = Proyecto::create([
             'Nombre' => $request->Nombre,
             'id_Proyecto_detalle' => $detalle->id_Proyecto_detalle,
             'Estado' => 1,
-            'Creado_por' => 1,
-            'Actualizado_por' => 1,
+            'Creado_por' => Auth::id(), // 👈 Usuario autenticado
+            'Actualizado_por' => Auth::id(),
             'Fecha_creacion' => now(),
             'Fecha_actualizacion' => now()
         ]);
@@ -72,16 +75,18 @@ class ProyectoController extends Controller
         $proyecto = Proyecto::findOrFail($id);
         $detalle = $proyecto->detalle;
 
+        // 🧩 Actualizar detalle
         $detalle->update([
             'Descripcion' => $request->Descripcion,
             'Ubicacion' => $request->Ubicacion,
-            'Actualizado_por' => 1,
+            'Actualizado_por' => Auth::id(), // 👈 Usuario autenticado
             'Fecha_actualizacion' => now()
         ]);
 
+        // 🧩 Actualizar proyecto principal
         $proyecto->update([
             'Nombre' => $request->Nombre,
-            'Actualizado_por' => 1,
+            'Actualizado_por' => Auth::id(), // 👈 Usuario autenticado
             'Fecha_actualizacion' => now()
         ]);
 

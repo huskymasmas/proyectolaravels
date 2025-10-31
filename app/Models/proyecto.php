@@ -12,4 +12,14 @@ class Proyecto extends Model
 
     public function detalle(){ return $this->belongsTo(ProyectoDetalle::class, 'id_Proyecto_detalle'); }
     public function utilidades(){ return $this->hasMany(Utilidades::class, 'id_Proyecto'); }
+    
+    public function creador()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function actualizador()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Configuracion extends Model
@@ -9,8 +10,19 @@ class Configuracion extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'Parametros','Valor','NOTAS','Creado_por','Actualizado_por','Fecha_creacion','Fecha_actualizacion'
+        'Parametros',
+        'Valor',
+        'NOTAS',
+        'id_Proyecto', // 👈 campo para filtro
+        'Creado_por',
+        'Actualizado_por',
+        'Fecha_creacion',
+        'Fecha_actualizacion'
     ];
 
-    public function creador(){ return $this->belongsTo(Usuario::class, 'Creado_por'); }
+    // Relación con proyectos
+    public function proyecto()
+    {
+        return $this->belongsTo(Proyecto::class, 'id_Proyecto');
+    }
 }

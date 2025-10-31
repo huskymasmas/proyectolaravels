@@ -3,6 +3,7 @@
 <div class="container">
     <h2>Proyectos</h2>
 
+
     <div class="container">
     <h2>{{ isset($proyecto) ? 'Editar Proyecto' : 'Crear Proyecto' }}</h2>
 
