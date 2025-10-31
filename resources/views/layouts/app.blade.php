@@ -1,76 +1,80 @@
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<div class="container">
-  <h2>Registrar mezcla (producción)</h2>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-  @endif
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
-  <form action="{{ route('produccion.store') }}" method="POST">
-    @csrf
-    <div class="mb-3">
-      <label>Proyecto</label>
-      <select name="id_Proyecto" class="form-control" required>
-        @foreach($proyectos as $p)
-          <option value="{{ $p->id_Proyecto }}">{{ $p->Nombre }}</option>
-        @endforeach
-      </select>
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+
+    <!-- Scripts -->
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'Laravel') }}
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Left Side Of Navbar -->
+                    <ul class="navbar-nav me-auto">
+
+                    </ul>
+
+                    <!-- Right Side Of Navbar -->
+                    <ul class="navbar-nav ms-auto">
+                        <!-- Authentication Links -->
+                        @guest
+                            @if (Route::has('login'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                </li>
+                            @endif
+
+                            @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                </li>
+                            @endif
+                        @else
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ Auth::user()->name }}
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
+                                </div>
+                            </li>
+                        @endguest
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="py-4">
+            @yield('content')
+        </main>
     </div>
-
-    <div class="mb-3">
-      <label>Dosificación</label>
-      <select name="id_Dosificacion" class="form-control" required>
-        @foreach($dosificaciones as $d)
-          <option value="{{ $d->id_Dosificacion }}">{{ $d->Tipo }} — Cemento:{{ $d->Cemento }} | Arena:{{ $d->Arena }}</option>
-        @endforeach
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label>Planta</label>
-      <select name="id_Planta" class="form-control" required>
-        @foreach($plantas as $pl)
-          <option value="{{ $pl->id_Planta }}">{{ $pl->Nombre }}</option>
-        @endforeach
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label>Fecha</label>
-      <input type="date" name="Fecha" class="form-control" value="{{ date('Y-m-d') }}" required>
-    </div>
-
-    <div class="row">
-      <div class="col">
-        <label>Volumen (m³)</label>
-        <input step="0.01" type="number" name="Volumen_m3" class="form-control" required>
-      </div>
-      <div class="col">
-        <label>Cemento (kg)</label>
-        <input step="0.01" type="number" name="Cemento_kg" class="form-control" required>
-      </div>
-      <div class="col">
-        <label>Arena (m³)</label>
-        <input step="0.001" type="number" name="Arena_m3" class="form-control" required>
-      </div>
-    </div>
-
-    <div class="row mt-2">
-      <div class="col">
-        <label>Piedrín (m³)</label>
-        <input step="0.001" type="number" name="Piedrin_m3" class="form-control" required>
-      </div>
-      <div class="col">
-        <label>Aditivo (L)</label>
-        <input step="0.01" type="number" name="Aditivo_l" class="form-control" required>
-      </div>
-      <div class="col">
-        <label>ID Vale (opcional)</label>
-        <input type="number" name="id_Vale" class="form-control">
-      </div>
-    </div>
-
-    <button class="btn btn-primary mt-3">Guardar</button>
-  </form>
-</div>
-
+</body>
+</html>

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProduccionController;
+use App\Http\Controllers\ProyectoController;
 
 
 Route::get('/', function () {
@@ -9,9 +9,8 @@ Route::get('/', function () {
 });
 
 
-Route::get('/produccion/crear', [ProduccionController::class, 'create'])->name('produccion.create');
-Route::post('/produccion/store', [ProduccionController::class, 'store'])->name('produccion.store');
-Route::get('/produccion/reporte', [ProduccionController::class,'reporte'])->name('produccion.reporte');
-Route::get('/produccion', [ProduccionController::class, 'index'])->name('produccion.index');
-Route::get('/produccion/{id}/editar', [ProduccionController::class, 'edit'])->name('produccion.edit');
-Route::put('/produccion/{id}', [ProduccionController::class, 'update'])->name('produccion.update');
+
+Route::resource('proyectos', ProyectoController::class);
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
