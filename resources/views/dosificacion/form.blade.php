@@ -19,23 +19,23 @@
                     </option>
                 @endforeach
             </select>
-        </div>
 
-        @if(isset($dosificacion)) @method('PUT') @endif
-
-        <div class="mb-3">
-            <label>Tipo de Dosificación</label>
-            <select name="id_Tipo_dosificacion" class="form-control" required>
+            <label>Proyecto</label>
+            <select name="id_Proyecto" class="form-control" required>
                 <option value="">Seleccione un tipo</option>
-                @foreach($tipos as $tipo)
-                    <option value="{{ $tipo->id_Tipo_dosificacion }}" 
-                        {{ isset($dosificacion) && $dosificacion->id_Tipo_dosificacion == $tipo->id_Tipo_dosificacion ? 'selected' : '' }}>
-                        {{ $tipo->Nombre }}
+                @foreach($proyecto as $proyectos)
+                    <option value="{{ $proyectos->id_Proyecto }}" 
+                        {{ isset($dosificacion) && $dosificacion->id_Proyecto == $proyectos->id_Proyecto ? 'selected' : '' }}>
+                        {{ $proyectos->Nombre }}
                     </option>
                 @endforeach
             </select>
+
         </div>
 
+        
+
+      
 
         <div class="mb-3"><label>Cemento (kg/m3)</label>
             <input type="number" name="Cemento" class="form-control" value="{{ $dosificacion->Cemento ?? '' }}" required>

@@ -27,6 +27,7 @@
             <tr>
                 <th>ID</th>
                 <th>Tipo</th>
+                <th>proyecto</th>
                 <th>Cemento</th>
                 <th>Arena</th>
                 <th>Pedrín</th>
@@ -40,6 +41,7 @@
             <tr>
                 <td>{{ $d->id_Dosificacion }}</td>
                 <td>{{ $d->Tipo_dosificador->Nombre ?? 'Sin tipo' }}</td>
+                <td>{{ $d->Proyecto->Nombre ?? 'Sin tipo' }}</td>
                 <td>{{ $d->Cemento }}</td>
                 <td>{{ $d->Arena }}</td>
                 <td>{{ $d->Pedrin }}</td>
