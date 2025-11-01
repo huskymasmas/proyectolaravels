@@ -6,7 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\DosificacionController;
-
+use App\Http\Controllers\UtilidadController;
 Route::get('/', function () {
     return view('index');
 });
@@ -21,6 +21,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //rutas para usuarios
 
 //admin
+
+
+Route::resource('utilidades', UtilidadController::class)->middleware(['auth' , 'role:admin']);
 
 
 Route::resource('dosificacion', DosificacionController::class)->middleware(['auth' , 'role:admin']);

@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class ProyectoRequerimientoCueta extends Model
+{
+    protected $table = 'tbl_Proyecto_Requerimiento_cueta';
+    protected $primaryKey = 'id_Proyecto_Requerimiento_cueta';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'id_Requerimiento_cuetas', 'id_Proyecto',
+        'Creado_por', 'Actualizado_por', 'Fecha_creacion', 'Fecha_actualizacion'
+    ];
+
+    public function requerimiento()
+    {
+        return $this->belongsTo(RequerimientoCueta::class, 'id_Requerimiento_cuetas');
+    }
+
+    public function proyecto()
+    {
+        return $this->belongsTo(Proyecto::class, 'id_Proyecto');
+    }
+}
