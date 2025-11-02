@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Utilidad;
 use App\Models\Unidad;
 use App\Models\Proyecto;
+use App\Models\ProyectoUtilidad;  
 use Illuminate\Support\Facades\Auth;
 
 class UtilidadController extends Controller
@@ -24,6 +25,7 @@ class UtilidadController extends Controller
 
         return view('utilidades.index', compact('utilidades', 'proyectos', 'proyectoSeleccionado'));
     }
+
 
     public function create()
     {
