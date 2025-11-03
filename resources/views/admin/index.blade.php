@@ -7,7 +7,16 @@
         crear proyecto
         </button>
     <button class="btn btn-secondary" onclick="window.location='{{ route('Configuracion.index') }}'">
-        crear configuracion
+        configuracion
         </button>
+    <button class="btn btn-secondary" onclick="window.location='{{ route('dosificacion.index') }}'">
+        dosificaciones
+        </button>
+    <button class="btn btn-secondary" onclick="window.location='{{ route('detalles.index') }}'">
+        detalles
+        </button>
+    <button class="btn btn-secondary" onclick="window.location='{{ route('requerimientos.index') }}'">
+        requerimientos
+    </button>
 </div>
 @endsection

@@ -75,18 +75,18 @@ class ProyectoController extends Controller
         $proyecto = Proyecto::findOrFail($id);
         $detalle = $proyecto->detalle;
 
-        // 🧩 Actualizar detalle
+ 
         $detalle->update([
             'Descripcion' => $request->Descripcion,
             'Ubicacion' => $request->Ubicacion,
-            'Actualizado_por' => Auth::id(), // 👈 Usuario autenticado
+            'Actualizado_por' => Auth::id(), 
             'Fecha_actualizacion' => now()
         ]);
 
         // 🧩 Actualizar proyecto principal
         $proyecto->update([
             'Nombre' => $request->Nombre,
-            'Actualizado_por' => Auth::id(), // 👈 Usuario autenticado
+            'Actualizado_por' => Auth::id(),
             'Fecha_actualizacion' => now()
         ]);
 
