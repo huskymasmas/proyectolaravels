@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+  <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
 <div class="container">
     <h2>{{ isset($dosificacion) ? 'Editar Dosificación' : 'Nueva Dosificación' }}</h2>
 
@@ -60,5 +62,7 @@
         <button type="submit" class="btn btn-success">Guardar</button>
         <a href="{{ route('dosificacion.index') }}" class="btn btn-secondary">Volver</a>
     </form>
+</div>
+</div>
 </div>
 @endsection

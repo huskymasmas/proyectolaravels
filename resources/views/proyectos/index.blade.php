@@ -1,5 +1,6 @@
-@include('header')
+@extends('layouts.app')
 
+@section('content')
 <div class="container">
     <h2>Proyectos</h2>
 
@@ -71,3 +72,4 @@
         </tbody>
     </table>
 </div>
+@endsection
