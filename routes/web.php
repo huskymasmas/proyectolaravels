@@ -14,7 +14,16 @@ use App\Http\Controllers\NominaController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ExportarController;
 use App\Http\Controllers\DepartamentoController;
+use App\Http\Controllers\BodegaGeneralController;
+use App\Http\Controllers\EstadoTrabajoController;
+use App\Http\Controllers\TrabajoController;
+use App\Http\Controllers\ValeIngresoController;
+use App\Http\Controllers\BodegaProyectoController;
+use App\Http\Controllers\ValeEgresoController;
+use Illuminate\Support\Facades\Auth;
+
 Route::get('/', function () {
+
     return view('index');
 });
 
@@ -26,32 +35,30 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 //rutas para usuarios
-
 //admin
 
 
+Route::get('/vale_egreso', [ValeEgresoController::class, 'index'])->name('vale_egreso.index')->middleware(['auth' , 'role:admin']);
+Route::get('/vale_egreso/create', [ValeEgresoController::class, 'create'])->name('vale_egreso.create')->middleware(['auth' , 'role:admin']);
+Route::post('/vale_egreso', [ValeEgresoController::class, 'store'])->name('vale_egreso.store')->middleware(['auth' , 'role:admin']);
+
+Route::get('/bodega_proyecto', [BodegaProyectoController::class, 'index'])->name('bodega_proyecto.index')->middleware(['auth' , 'role:admin']);
+Route::get('/bodega_proyecto/{id}', [BodegaProyectoController::class, 'show'])->name('bodega_proyecto.show')->middleware(['auth' , 'role:admin']);
+Route::resource('vale_ingreso', ValeIngresoController::class)->middleware(['auth' , 'role:admin']);;
+Route::resource('estado_trabajo', EstadoTrabajoController::class)->middleware(['auth' , 'role:admin']);
+Route::resource('trabajo', TrabajoController::class)->middleware(['auth' , 'role:admin']);
+Route::resource('bodega', BodegaGeneralController::class)->middleware(['auth' , 'role:admin']);
 Route::resource('departamentos', DepartamentoController::class)->middleware(['auth' , 'role:admin']);
-
 Route::get('/exportar', [ExportarController::class, 'exportar'])->name('exportar');
-
 Route::resource('asistencia', AsistenciaController::class)->middleware(['auth' , 'role:admin']);
-
 Route::resource('requerimientos', RequerimientoMaterialController::class)->middleware(['auth' , 'role:admin']);
-
 Route::resource('detalles', DetalleController::class)->middleware(['auth' , 'role:admin']);
-
 Route::resource('dosificacion', DosificacionController::class)->middleware(['auth' , 'role:admin']);
-
 Route::resource('admin/inicio', AdminController::class)->middleware(['auth' , 'role:admin']);
-
 Route::resource('proyectos', ProyectoController::class)->middleware(['auth' , 'role:admin']);
-
 Route::resource('Configuracion', ConfiguracionController::class)->middleware(['auth' , 'role:admin']);
-
 Route::resource('roles', RolController::class)->middleware(['auth', 'role:admin']);
-
 Route::resource('nomina', NominaController::class)->middleware(['auth', 'role:admin']);
-
 Route::resource('empleados', EmpleadoController::class)->middleware(['auth', 'role:admin']);
 
 

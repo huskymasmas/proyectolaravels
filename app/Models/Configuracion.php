@@ -13,7 +13,7 @@ class Configuracion extends Model
         'Parametros',
         'Valor',
         'NOTAS',
-        'id_Proyecto', // 👈 campo para filtro
+        'id_Proyecto', 
         'Creado_por',
         'Actualizado_por',
         'Fecha_creacion',
