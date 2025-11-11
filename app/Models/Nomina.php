@@ -10,52 +10,36 @@ class Nomina extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_Nomina';
+    protected $table = 'tbl_nomina';
     protected $primaryKey = 'id_Nomina';
-    public $incrementing = true;
     public $timestamps = false;
 
     protected $fillable = [
         'sueldo_Base',
+        'Costo_horas_extras',
         'Bonos',
         'Bonos_adicional',
+        'viaticosnomina',
         'Estado',
-        'Creado_por',
-        'Actualizado_por',
         'Fecha_creacion',
         'Fecha_actualizacion',
+        'Creado_por',
+        'Actualizado_por'
     ];
 
-    // RELACIONES
-    public function empleados()
-    {
-        return $this->hasMany(Empleado::class, 'id_Nomina', 'id_Nomina');
-    }
-
-    public function detallesNomina()
-    {
-        return $this->hasMany(DetalleNomina::class, 'id_Nomina', 'id_Nomina');
-    }
-
-    public function registrosDiarios()
-    {
-        return $this->hasMany(RegistroDiario::class, 'id_Nomina', 'id_Nomina');
-    }
-
-    // AUDITORÍA AUTOMÁTICA
+    // 🔹 Campos de auditoría automáticos
     protected static function boot()
     {
         parent::boot();
 
-        static::creating(function ($nomina) {
-            $nomina->Creado_por = Auth::id();
-            $nomina->Fecha_creacion = now();
-            $nomina->Estado = 1;
+        static::creating(function ($model) {
+            $model->Creado_por = Auth::id();
+            $model->Fecha_creacion = now();
         });
 
-        static::updating(function ($nomina) {
-            $nomina->Actualizado_por = Auth::id();
-            $nomina->Fecha_actualizacion = now();
+        static::updating(function ($model) {
+            $model->Actualizado_por = Auth::id();
+            $model->Fecha_actualizacion = now();
         });
     }
 }

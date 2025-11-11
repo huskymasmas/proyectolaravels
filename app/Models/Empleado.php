@@ -47,6 +47,18 @@ class Empleado extends Model
     {
         return $this->hasMany(RegistroDiario::class, 'id_Empleados', 'id_Empleados');
     }
+    public function departamento()
+{
+    return $this->belongsTo(Departamento::class, 'id_Departamento', 'id_Departamento'); 
+    // 'id' es la PK de tu tabla departamentos
+   }
+
+// Nueva relación con Rol
+public function rol()
+{
+    return $this->belongsTo(Rol::class, 'id_Rol', 'id_Rol'); 
+    // 'id_Rol' es la PK de tu tabla roles
+}
 
     // AUDITORÍA AUTOMÁTICA
     protected static function boot()

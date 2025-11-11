@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DetalleNomina extends Model
 {
@@ -12,41 +12,45 @@ class DetalleNomina extends Model
 
     protected $table = 'tbl_detalle_nomina';
     protected $primaryKey = 'id_detalle_nomina';
-    public $incrementing = true;
     public $timestamps = false;
 
     protected $fillable = [
-        'id_Nomina',
+        'id_Empleados',
         'Horas_extras',
         'cantidad_dias',
         'totla_A_pagar',
-        'Estado',
         'Creado_por',
         'Actualizado_por',
         'Fecha_creacion',
-        'Fecha_actualizacion',
+        'Fecha_actualizacion'
     ];
 
-    // RELACIONES
-    public function nomina()
+    // Relación con Empleado
+    public function empleado()
     {
-        return $this->belongsTo(Nomina::class, 'id_Nomina', 'id_Nomina');
+        return $this->belongsTo(Empleado::class, 'id_Empleados', 'id_Empleados');
     }
 
-    // AUDITORÍA AUTOMÁTICA
-    protected static function boot()
+    // Método para calcular el total a pagar con JOIN
+    public static function calcularTotal($idEmpleado, $horasExtras, $cantidadDias)
     {
-        parent::boot();
+        $datos = DB::table('tbl_Empleados as e')
+            ->join('tbl_Nomina as n', 'e.id_Nomina', '=', 'n.id_Nomina')
+            ->select(
+                'n.Costo_horas_extras',
+                'n.sueldo_Base',
+                'n.viaticosnomina'
+            )
+            ->where('e.id_Empleados', $idEmpleado)
+            ->first();
 
-        static::creating(function ($detalle) {
-            $detalle->Creado_por = Auth::id();
-            $detalle->Fecha_creacion = now();
-            $detalle->Estado = 1;
-        });
+        if (!$datos) return 0;
 
-        static::updating(function ($detalle) {
-            $detalle->Actualizado_por = Auth::id();
-            $detalle->Fecha_actualizacion = now();
-        });
+        $total = (($horasExtras * $datos->Costo_horas_extras)
+                 + $datos->sueldo_Base
+                 + $datos->viaticosnomina)
+                 * $cantidadDias;
+
+        return $total;
     }
 }

@@ -41,7 +41,7 @@ class RegistroDiarioController extends Controller
         $nomina = $empleado->nomina;
 
         // Cálculo de valores
-        $viaticos = $nomina ? $nomina->Bonos : 0;
+        $viaticos = $nomina ? $nomina->viaticosnomina : 0;
         $adelanto_viatico = $request->dias_viaticos * $viaticos;
         $sueldo_base = $nomina ? $nomina->sueldo_Base : 0;
 

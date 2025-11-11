@@ -27,6 +27,9 @@ use App\Http\Controllers\TramoAplicacionController;
 use App\Http\Controllers\ControlConcretoCampoController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\RegistroDiarioController;
+use App\Http\Controllers\DetalleNominaController;
+use App\Http\Controllers\ReporteNominaDetalleController;
+use App\Http\Controllers\ReporteNominaController;
 
 Route::get('/', function () {
 
@@ -43,6 +46,15 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //rutas para usuarios
 //admin
 
+
+Route::get('/reportes/nomina_detalle_empleados', [ReporteNominaDetalleController::class, 'index'])
+    ->name('reportes.nomina_detalle_empleados.index');
+
+
+Route::get('/reportes/nomina', [ReporteNominaController::class, 'index'])->name('reportes.nomina.index');
+
+Route::resource('nomina', NominaController::class)->middleware(['auth' , 'role:admin']);
+Route::resource('detalle_nomina', DetalleNominaController::class)->middleware(['auth' , 'role:admin']);
 Route::resource('registro_diario', RegistroDiarioController::class)->middleware(['auth' , 'role:admin']);
 Route::get('/facturas', [FacturaController::class, 'index'])->name('facturas.index');
 Route::post('/facturas/buscar', [FacturaController::class, 'buscar'])->name('facturas.buscar');
