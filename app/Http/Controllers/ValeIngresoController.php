@@ -30,6 +30,9 @@ class ValeIngresoController extends Controller
 
     public function store(Request $request)
     {
+
+            try {
+
         $request->validate([
             'Fecha' => 'required|date',
             'Hora_llegada' => 'required',
@@ -146,8 +149,15 @@ class ValeIngresoController extends Controller
             'Placa_vehiculo' => $request->Placa_vehiculo,
             'Origen' => $request->Origen_material
         ]);
+      
 
+        // ✅ Mensaje de éxito
         return redirect()->route('vale_ingreso.index')
             ->with('success', 'Vale de ingreso registrado y bodegas actualizadas correctamente.');
+        } catch (\Exception $e) {
+        // ❌ Mensaje de error
+        return redirect()->route('vale_ingreso.index')
+            ->with('error', 'Ocurrió un error al registrar el vale: ' . $e->getMessage());
+      }
     }
 }

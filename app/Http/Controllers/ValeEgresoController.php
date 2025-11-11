@@ -8,6 +8,7 @@ use App\Models\DespachoConcreto;
 use App\Models\AditivoAplicados;
 use App\Models\DosificacionVale;
 use App\Models\BodegaGeneral;
+use App\Models\FormatoControlDespachoPlanta;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,13 +38,12 @@ class ValeEgresoController extends Controller
             'id_Proyecto' => 'required|numeric',
             'Volumen_carga_M3' => 'required|numeric',
             'Tipo_Concreto' => 'required',
-            // Firmas opcionales
         ]);
 
         DB::beginTransaction();
 
         try {
-            $usuarioId = Auth::id(); // usuario autenticado
+            $usuarioId = Auth::id();
 
             // 1️⃣ Crear despacho
             $despacho = DespachoConcreto::create(array_merge(
@@ -51,18 +51,23 @@ class ValeEgresoController extends Controller
                     'Codigo_planta','id_Proyecto','Fecha','Volumen_carga_M3',
                     'Hora_salida_plata','Tipo_Concreto','id_Empresa','Inicio_Carga',
                     'Finaliza_carga','Hora_llega_Proyecto','Tipo_elemento',
-                    'Placa_numero','Estado','Actualizado_por','Fecha_creacion','Fecha_actualizacion'
+                    'Placa_numero','Estado'
                 ]),
-                ['Creado_por' => $usuarioId] // asignar creado por
+                [
+                    'Creado_por' => $usuarioId,
+                    'Fecha_creacion' => now()
+                ]
             ));
 
             // 2️⃣ Crear dosificación
             $dosificacion = DosificacionVale::create(array_merge(
                 $request->only([
-                    'kg_cemento_granel','Sacos_Cemento','kg_piedirn','Kg_arena','lts_agua',
-                    'Estado','Actualizado_por','Fecha_creacion','Fecha_actualizacion'
+                    'kg_cemento_granel','Sacos_Cemento','kg_piedirn','Kg_arena','lts_agua','Estado'
                 ]),
-                ['Creado_por' => $usuarioId]
+                [
+                    'Creado_por' => $usuarioId,
+                    'Fecha_creacion' => now()
+                ]
             ));
 
             // 3️⃣ Crear aditivos
@@ -70,10 +75,10 @@ class ValeEgresoController extends Controller
                 'Nombre1','Nombre2','Nombre3','Nombre4',
                 'Cantidad1','Cantidad2','Cantidad3','Cantidad4',
                 'Firma1_ruta_imagen_encargado_palata','Firma2_ruta_imagen_coductor','Firma3_ruta_imagen_Resibi_conforme',
-                'Nombre_encargado_palata','Nombre_coductor','Nombre_Resibi_conforme',
-                'Estado','Actualizado_por','Fecha_creacion','Fecha_actualizacion'
+                'Nombre_encargado_palata','Nombre_coductor','Nombre_Resibi_conforme','Estado'
             ]);
             $aditivoData['Creado_por'] = $usuarioId;
+            $aditivoData['Fecha_creacion'] = now();
             $aditivo = AditivoAplicados::create($aditivoData);
 
             // 4️⃣ Crear vale de despacho
@@ -87,13 +92,40 @@ class ValeEgresoController extends Controller
                 'Fecha_creacion' => now(),
             ]);
 
-            // 5️⃣ Actualizar bodega
+            // 5️⃣ Crear registro en Formato de Control de Despacho Planta
+            FormatoControlDespachoPlanta::create([
+                'No_envio' => $vale->No_vale,
+                'id_Proyecto' => $despacho->id_Proyecto,
+                'Tipo_de_Concreto_ps' => $despacho->Tipo_Concreto,
+                'Cantidad_Concreto_mT3' => $despacho->Volumen_carga_M3,
+                'Concreto_granel_kg' => $dosificacion->kg_cemento_granel,
+                'Concreto_sacos_kg' => $dosificacion->Sacos_Cemento,
+                'total' => $dosificacion->kg_cemento_granel + ($dosificacion->Sacos_Cemento * 42.5),
+                'kg_Piedrin' => $dosificacion->kg_piedirn,
+                'kg_Arena' => $dosificacion->Kg_arena,
+                'Lts_Agua' => $dosificacion->lts_agua,
+                'Aditivo1' => $aditivo->Nombre1,
+                'Aditivo2' => $aditivo->Nombre2,
+                'Aditivo3' => $aditivo->Nombre3,
+                'Aditivo4' => $aditivo->Nombre4,
+                'cantidad1' => $aditivo->Cantidad1,
+                'cantidad2' => $aditivo->Cantidad2,
+                'cantidad3' => $aditivo->Cantidad3,
+                'cantidad4' => $aditivo->Cantidad4,
+                'id_Empleados' => $usuarioId, // supervisor = usuario actual
+                'Observaciones' => '', // vacío por defecto
+                'Estado' => 1,
+                'Creado_por' => $usuarioId,
+                'Fecha_creacion' => now(),
+            ]);
+
+            // 6️⃣ Actualizar bodega
             $this->actualizarBodega('cemento', $dosificacion->kg_cemento_granel + ($dosificacion->Sacos_Cemento * 42.5));
             $this->actualizarBodega('piedrin', $dosificacion->kg_piedirn);
             $this->actualizarBodega('arena', $dosificacion->Kg_arena);
             $this->actualizarBodega('agua', $dosificacion->lts_agua);
 
-            // 6️⃣ Aditivos
+            // 7️⃣ Aditivos en bodega
             for ($i = 1; $i <= 4; $i++) {
                 $nombreCampo = 'Nombre' . $i;
                 $cantidadCampo = 'Cantidad' . $i;
@@ -103,7 +135,6 @@ class ValeEgresoController extends Controller
             }
 
             DB::commit();
-
             return redirect()->route('vale_egreso.index')->with('success', 'Vale egreso creado correctamente.');
 
         } catch (\Exception $e) {

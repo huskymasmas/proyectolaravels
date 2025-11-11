@@ -21,6 +21,12 @@ use App\Http\Controllers\ValeIngresoController;
 use App\Http\Controllers\BodegaProyectoController;
 use App\Http\Controllers\ValeEgresoController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\FormatoControlDespachoPlantaController;
+use App\Http\Controllers\TramoController;
+use App\Http\Controllers\TramoAplicacionController;
+use App\Http\Controllers\ControlConcretoCampoController;
+use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\RegistroDiarioController;
 
 Route::get('/', function () {
 
@@ -37,11 +43,20 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //rutas para usuarios
 //admin
 
-
+Route::resource('registro_diario', RegistroDiarioController::class)->middleware(['auth' , 'role:admin']);
+Route::get('/facturas', [FacturaController::class, 'index'])->name('facturas.index');
+Route::post('/facturas/buscar', [FacturaController::class, 'buscar'])->name('facturas.buscar');
+Route::get('/facturas/exportar/{numFactura}', [FacturaController::class, 'exportarExcel'])->name('facturas.exportar');
+Route::resource('control_concreto_campo', ControlConcretoCampoController::class)->middleware(['auth' , 'role:admin']);
+Route::resource('tramo_aplicacion', TramoAplicacionController::class)->middleware(['auth' , 'role:admin']);
+Route::resource('tramos', TramoController::class)->middleware(['auth' , 'role:admin']);
+Route::resource('formato_despacho', FormatoDespachoController::class);
+Route::get('/formato_despacho', [FormatoControlDespachoPlantaController::class, 'Index'])->name('formato_despacho.index');
+Route::get('/formato_despacho/{id}/edit', [FormatoControlDespachoPlantaController::class, 'edit'])->name('formato_despacho.edit');
+Route::put('/formato_despacho/{id}', [FormatoControlDespachoPlantaController::class, 'update'])->name('formato_despacho.update');
 Route::get('/vale_egreso', [ValeEgresoController::class, 'index'])->name('vale_egreso.index')->middleware(['auth' , 'role:admin']);
 Route::get('/vale_egreso/create', [ValeEgresoController::class, 'create'])->name('vale_egreso.create')->middleware(['auth' , 'role:admin']);
 Route::post('/vale_egreso', [ValeEgresoController::class, 'store'])->name('vale_egreso.store')->middleware(['auth' , 'role:admin']);
-
 Route::get('/bodega_proyecto', [BodegaProyectoController::class, 'index'])->name('bodega_proyecto.index')->middleware(['auth' , 'role:admin']);
 Route::get('/bodega_proyecto/{id}', [BodegaProyectoController::class, 'show'])->name('bodega_proyecto.show')->middleware(['auth' , 'role:admin']);
 Route::resource('vale_ingreso', ValeIngresoController::class)->middleware(['auth' , 'role:admin']);;

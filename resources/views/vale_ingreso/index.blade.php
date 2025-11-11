@@ -27,6 +27,10 @@
                         <th>Nombre del Encargado de Planta</th>
                         <th>Nombre del Bodegero</th>
                         <th>Nombre del Residente de Obra</th>
+                        <th>Número de Factura</th>
+                        <th>Precio Unitario</th>
+                        <th>NIT</th>
+                        <th>Precio Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,6 +45,10 @@
                             <td>{{ $vale->Nombre_encargado_palata }}</td>
                             <td>{{ $vale->Nombre_bodegero }}</td>
                             <td>{{ $vale->Nombre_residente_obra }}</td>
+                            <td>{{ $vale->Num_factura }}</td>
+                            <td>{{ $vale->nit }}</td>
+                            <td>{{ $vale->precio_unitario }}</td>
+                            <td>{{ $vale->precio_total }}</td>
                         </tr>
                     @empty
                         <tr>

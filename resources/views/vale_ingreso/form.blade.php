@@ -100,6 +100,18 @@
                         <label for="Origen_material" class="form-label">Origen del Material</label>
                         <input type="text" name="Origen_material" id="Origen_material" class="form-control">
                     </div>
+                    <div class="col-md-4">
+                        <label for="Num_factura" class="form-label">Número de Factura</label>
+                        <input type="text" name="Num_factura" id="Num_factura" class="form-control">
+                    </div>
+                     <div class="col-md-4">
+                        <label for="nit" class="form-label">NIT</label>
+                        <input type="text" name="nit" id="nit" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="precio_unitario" class="form-label">Precio Unitario</label>
+                        <input type="text" name="precio_unitario" id="precio_unitario" class="form-control">
+                    </div>
                 </div>
 
                 {{-- Firmas --}}
