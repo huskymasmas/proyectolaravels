@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ControlConcretoCampo extends Model
 {
+    use HasFactory;
+
     protected $table = 'tbl_control_concreto_campo';
     protected $primaryKey = 'id_control_concreto_campo';
     public $timestamps = false;
 
     protected $fillable = [
-        'id_Proyecto',
+        'id_Aldea',
         'fecha',
         'codigo_envio_camion',
         'hora_llegada',
@@ -36,8 +39,8 @@ class ControlConcretoCampo extends Model
         'Fecha_actualizacion'
     ];
 
-    public function proyecto()
+    public function aldea()
     {
-        return $this->belongsTo(\App\Models\Proyecto::class, 'id_Proyecto');
+        return $this->belongsTo(Aldea::class, 'id_Aldea', 'id_aldea');
     }
 }

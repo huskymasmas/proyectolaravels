@@ -28,4 +28,20 @@ class Cuneta extends Model
     {
         return $this->belongsTo(Eje::class, 'id_Ejes');
     }
+     // 🔹 Relación muchos a muchos con Tramo
+    public function tramos()
+    {
+        return $this->belongsToMany(
+            Tramo::class,
+            'tramo_elemento',
+            'id_cuneta',
+            'id_tramo'
+        )->withPivot([
+            'Estado',
+            'Creado_por',
+            'Actualizado_por',
+            'Fecha_creacion',
+            'Fecha_actualizacion'
+        ]);
+    }
 }

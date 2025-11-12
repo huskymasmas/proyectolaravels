@@ -2,64 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ControlConcretoCampo;
-use App\Models\Proyecto;
+use App\Models\Aldea;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ControlConcretoCampoController extends Controller
 {
     public function index()
     {
-        $controles = ControlConcretoCampo::with('proyecto')->orderBy('id_control_concreto_campo','desc')->get();
-        return view('control_concreto_campo.index', compact('controles'));
+        $registros = ControlConcretoCampo::with('aldea')->get();
+        return view('control_concreto_campo.index', compact('registros'));
     }
 
     public function create()
     {
-        $proyectos = Proyecto::all();
-        return view('control_concreto_campo.form', compact('proyectos'));
+        $aldeas = Aldea::all();
+        return view('control_concreto_campo.form', [
+            'registro' => new ControlConcretoCampo(),
+            'aldeas' => $aldeas
+        ]);
     }
 
     public function store(Request $request)
     {
+        $request->validate([
+            'id_Aldea' => 'required|integer',
+            'fecha' => 'required|date',
+            'codigo_envio_camion' => 'required|string|max:50',
+            'responsable' => 'required|string|max:100',
+        ]);
+
         $data = $request->all();
-        $data['Creado_por'] = Auth::id();
+        $data['Estado'] = 1; // 👈 Estado por defecto
+        $data['Creado_por'] = Auth::id() ?? 1;
         $data['Fecha_creacion'] = now();
-        $data['Estado'] = 1;
 
         ControlConcretoCampo::create($data);
 
         return redirect()->route('control_concreto_campo.index')
-                         ->with('success', 'Registro creado correctamente.');
+            ->with('success', 'Registro creado correctamente.');
     }
 
     public function edit($id)
     {
-        $control = ControlConcretoCampo::findOrFail($id);
-        $proyectos = Proyecto::all();
-        return view('control_concreto_campo.form', compact('control', 'proyectos'));
+        $registro = ControlConcretoCampo::findOrFail($id);
+        $aldeas = Aldea::all();
+        return view('control_concreto_campo.form', compact('registro', 'aldeas'));
     }
 
     public function update(Request $request, $id)
     {
-        $control = ControlConcretoCampo::findOrFail($id);
-        $data = $request->all();
-        $data['Actualizado_por'] = Auth::id();
+        $request->validate([
+            'id_Aldea' => 'required|integer',
+            'fecha' => 'required|date',
+            'codigo_envio_camion' => 'required|string|max:50',
+            'responsable' => 'required|string|max:100',
+        ]);
+
+        $registro = ControlConcretoCampo::findOrFail($id);
+
+        $data = $request->except(['Estado']); // 👈 Evita cambiar Estado
+        $data['Actualizado_por'] = Auth::id() ?? 1;
         $data['Fecha_actualizacion'] = now();
 
-        $control->update($data);
+        $registro->update($data);
 
         return redirect()->route('control_concreto_campo.index')
-                         ->with('success', 'Registro actualizado correctamente.');
+            ->with('success', 'Registro actualizado correctamente.');
     }
 
     public function destroy($id)
     {
-        $control = ControlConcretoCampo::findOrFail($id);
-        $control->delete();
+        $registro = ControlConcretoCampo::findOrFail($id);
+        $registro->delete();
+
         return redirect()->route('control_concreto_campo.index')
-                         ->with('success', 'Registro eliminado correctamente.');
+            ->with('success', 'Registro eliminado correctamente.');
     }
 }

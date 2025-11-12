@@ -5,17 +5,17 @@
 
     <h2 class="mb-4 text-center fw-bold">Listado de Tramos</h2>
 
-    {{-- ================== FILTRO POR PROYECTO ================== --}}
+    {{-- ================== FILTRO POR ALDEA ================== --}}
     <form method="GET" action="{{ route('tramos.index') }}" class="mb-4">
         <div class="row g-2 align-items-end">
             <div class="col-md-4">
-                <label for="proyecto" class="form-label">Filtrar por Proyecto:</label>
-                <select name="proyecto" id="proyecto" class="form-select">
-                    <option value="">-- Todos los Proyectos --</option>
-                    @foreach($proyectos as $proyecto)
-                        <option value="{{ $proyecto->id_Proyecto }}" 
-                            {{ request('proyecto') == $proyecto->id_Proyecto ? 'selected' : '' }}>
-                            {{ $proyecto->Nombre }}
+                <label for="aldea" class="form-label">Filtrar por Aldea:</label>
+                <select name="aldea" id="aldea" class="form-select">
+                    <option value="">-- Todas las Aldeas --</option>
+                    @foreach($aldeas as $aldea)
+                        <option value="{{ $aldea->id_aldea }}" 
+                            {{ request('aldea') == $aldea->id_aldea ? 'selected' : '' }}>
+                            {{ $aldea->Nombre }}
                         </option>
                     @endforeach
                 </select>
@@ -41,7 +41,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Fecha</th>
-                        <th>Proyecto</th>
+                        <th>Aldea</th>
                         <th>Tipo Concreto</th>
                         <th>Cant. Concreto (m³)</th>
                         <th>Supervisor</th>
@@ -56,7 +56,8 @@
                     <tr>
                         <td class="text-center">{{ $tramo->id_tramo }}</td>
                         <td>{{ $tramo->fecha }}</td>
-                        <td>{{ $tramo->proyecto->Nombre ?? 'Sin Proyecto' }}</td>
+                        {{-- Mostrar nombre de la aldea correctamente --}}
+                        <td>{{ $tramo->aldea_nombre ?? 'Sin Aldea' }}</td>
                         <td>{{ $tramo->tipo_concreto }}</td>
                         <td class="text-end">{{ number_format($tramo->cantidad_concreto_m3, 2) }}</td>
                         <td>{{ $tramo->supervisor }}</td>

@@ -1,52 +1,78 @@
 <?php
-// App/Models/Tramo.php
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Tramo extends Model
 {
+    use HasFactory;
+
     protected $table = 'tramo';
     protected $primaryKey = 'id_tramo';
     public $timestamps = false;
 
     protected $fillable = [
-        'id_Proyecto','No_envio','fecha','tipo_concreto','cantidad_concreto_m3',
-        'supervisor','temperatura','Nombre_aditivo','Cantidad_lts','Tipo',
-        'observaciones','Estado','Creado_por','Fecha_creacion'
+        'id_aldea',
+        'fecha',
+        'tipo_concreto',
+        'cantidad_concreto_m3',
+        'supervisor',
+        'temperatura',
+        'observaciones',
+        'Estado',
+        'Creado_por',
+        'Actualizado_por',
+        'Fecha_creacion',
+        'Fecha_actualizacion',
+        'No_envio',
+        'Nombre_aditivo',
+        'Cantidad_lts',
+        'Tipo'
     ];
 
-    // 🔹 Relación con Proyecto
-    public function proyecto()
+    protected static function boot()
     {
-            return $this->belongsTo(Proyecto::class, 'id_Proyecto', 'id_Proyecto');
+        parent::boot();
 
+        static::creating(function ($model) {
+            $model->Creado_por = Auth::id();
+            $model->Fecha_creacion = now();
+        });
+
+        static::updating(function ($model) {
+            $model->Actualizado_por = Auth::id();
+            $model->Fecha_actualizacion = now();
+        });
     }
 
-    // 🔹 Relación con TramoElemento (para rodaduras)
+    public function aldea()
+    {
+        return $this->belongsTo(Aldea::class, 'id_aldea', 'id_aldea');
+    }
+
     public function rodaduras()
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Rodadura::class,
-            TramoElemento::class,
-            'id_tramo',     // FK en TramoElemento hacia Tramo
-            'id_rodadura',  // FK en Rodadura
-            'id_tramo',     // PK de Tramo
-            'id_rodadura'   // PK de TramoElemento
-        );
+            'tramo_elemento',
+            'id_tramo',
+            'id_rodadura'
+        )->withPivot([
+            'Estado','Creado_por','Actualizado_por','Fecha_creacion','Fecha_actualizacion'
+        ]);
     }
 
-    // 🔹 Relación con TramoElemento (para cunetas)
     public function cunetas()
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Cuneta::class,
-            TramoElemento::class,
-            'id_tramo',    // FK en TramoElemento hacia Tramo
-            'id_cuneta',   // FK en Cuneta
-            'id_tramo',    // PK de Tramo
-            'id_cuneta'    // PK de TramoElemento
-        );
+            'tramo_elemento',
+            'id_tramo',
+            'id_cuneta'
+        )->withPivot([
+            'Estado','Creado_por','Actualizado_por','Fecha_creacion','Fecha_actualizacion'
+        ]);
     }
-    
 }

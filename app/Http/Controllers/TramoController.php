@@ -7,120 +7,121 @@ use App\Models\Rodadura;
 use App\Models\Cuneta;
 use App\Models\TramoElemento;
 use App\Models\Eje;
-use App\Models\Proyecto;
+use App\Models\Aldea;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TramoController extends Controller
 {
-    // 1️⃣ Index con filtro
-    public function index(Request $request)
-    {
-        $query = Tramo::with(['rodaduras', 'cunetas', 'proyecto']);
-
-        if ($request->filled('proyecto')) {
-            $query->where('id_Proyecto', $request->proyecto);
-        }
-        $tramos = $query->get();
-        $proyectos = Proyecto::all();
-
-        return view('tramos.index', compact('tramos', 'proyectos'));
-    }
-
-    // 2️⃣ Formulario
-    public function create()
-    {
-        $proyectos = Proyecto::all();
-        $ejes = Eje::all();
-
-        return view('tramos.create', compact('proyectos', 'ejes'));
-    }
-
-public function store(Request $request)
+public function index(Request $request)
 {
-    DB::beginTransaction();
+    // ================= FILTRO POR ALDEA =================
+    $query = Tramo::leftJoin('tbl_aldea', 'tramo.id_Aldea', '=', 'tbl_aldea.id_aldea')
+                  ->select('tramo.*', 'tbl_aldea.Nombre as aldea_nombre');
 
-    try {
-        // 1️⃣ Crear tramo
-        $tramo = Tramo::create([
-            'id_Proyecto' => $request->id_Proyecto,
-            'No_envio' => $request->no_envio,
-            'fecha' => $request->fecha,
-            'tipo_concreto' => $request->tipo_concreto,
-            'cantidad_concreto_m3' => $request->cantidad_concreto_m3,
-            'supervisor' => $request->supervisor ?? null,
-            'temperatura' => $request->temperatura ?? null,
-            'Nombre_aditivo' => $request->nombre_aditivo ?? null,
-            'Cantidad_lts' => $request->cantidad_lts ?? null,
-            'Tipo' => $request->tipo ?? null,
-            'observaciones' => $request->observaciones ?? null,
-            'Estado' => 1,
-            'Creado_por' => Auth::id(),
-            'Fecha_creacion' => now(),
-        ]);
-
-        // 2️⃣ Guardar rodaduras completas
-        if ($request->filled('rodaduras')) {
-            foreach ($request->rodaduras as $rod) {
-                $rodadura = Rodadura::create([
-                    'id_Ejes' => $rod['id_Ejes'] ?? null,
-                    'estacion_inicial' => $rod['estacion_inicial'] ?? null,
-                    'estacion_final' => $rod['estacion_final'] ?? null,
-                    'ancho_prom' => $rod['ancho_prom'] ?? null,
-                    'm2' => $rod['m2'] ?? null,
-                    'rendimiento_m3' => $rod['rendimiento_m3'] ?? null,
-                    'Estado' => 1,
-                    'Creado_por' => Auth::id(),
-                    'Fecha_creacion' => now(),
-                ]);
-
-                // Relación con tramo
-                TramoElemento::create([
-                    'id_tramo' => $tramo->id_tramo,
-                    'id_rodadura' => $rodadura->id_rodadura,
-                    'id_cuneta' => null,
-                    'Estado' => 1,
-                    'Creado_por' => Auth::id(),
-                    'Fecha_creacion' => now(),
-                ]);
-            }
-        }
-
-        // 3️⃣ Guardar cunetas completas
-        if ($request->filled('cunetas')) {
-            foreach ($request->cunetas as $cun) {
-                $cuneta = Cuneta::create([
-                    'id_Ejes' => $cun['id_Ejes'] ?? null,
-                    'estacion_inicial' => $cun['estacion_inicial'] ?? null,
-                    'estacion_final' => $cun['estacion_final'] ?? null,
-                    'ancho_prom' => $cun['ancho_prom'] ?? null,
-                    'm2' => $cun['m2'] ?? null,
-                    'rendimiento_m3' => $cun['rendimiento_m3'] ?? null,
-                    'Estado' => 1,
-                    'Creado_por' => Auth::id(),
-                    'Fecha_creacion' => now(),
-                ]);
-
-                TramoElemento::create([
-                    'id_tramo' => $tramo->id_tramo,
-                    'id_rodadura' => null,
-                    'id_cuneta' => $cuneta->id_cuneta,
-                    'Estado' => 1,
-                    'Creado_por' => Auth::id(),
-                    'Fecha_creacion' => now(),
-                ]);
-            }
-        }
-
-        DB::commit();
-        return redirect()->route('tramos.index')
-                         ->with('success', '✅ Tramo, rodaduras y cunetas guardadas correctamente.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        dd($e->getMessage());
+    if ($request->filled('aldea')) {
+        $query->where('tramo.id_Aldea', $request->aldea);
     }
+
+    $tramos = $query->get();
+    $aldeas = Aldea::all();
+
+    return view('tramos.index', compact('tramos', 'aldeas'));
 }
 
 
+    public function create()
+    {
+        $aldeas = Aldea::all();
+        $ejes = Eje::all();
 
+        return view('tramos.create', compact('aldeas','ejes'));
+    }
+
+    public function store(Request $request)
+    {
+
+
+        $request->validate([
+            'id_aldea' => 'required|integer|exists:tbl_aldea,id_aldea',
+            'fecha' => 'required|date',
+            'tipo_concreto' => 'required|string|max:255',
+            'cantidad_concreto_m3' => 'nullable|numeric',
+            'temperatura' => 'nullable|numeric',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $tramo = Tramo::create([
+                'id_aldea' => $request->input('id_aldea'),
+                'No_envio' => $request->input('No_envio') ?? null,
+                'fecha' => $request->input('fecha'),
+                'tipo_concreto' => $request->input('tipo_concreto'),
+                'cantidad_concreto_m3' => $request->input('cantidad_concreto_m3') ?? 0,
+                'supervisor' => $request->input('supervisor'),
+                'temperatura' => $request->input('temperatura'),
+                'Nombre_aditivo' => $request->input('nombre_aditivo'),
+                'Cantidad_lts' => $request->input('cantidad_lts'),
+                'Tipo' => $request->input('tipo'),
+                'observaciones' => $request->input('observaciones'),
+                'Estado' => 1,
+            ]);
+
+            // Rodaduras
+            if ($request->has('rodaduras') && is_array($request->rodaduras)) {
+                foreach ($request->rodaduras as $rod) {
+                    if(empty($rod['id_Ejes']) && empty($rod['estacion_inicial']) && empty($rod['estacion_final'])) continue;
+
+                    $rodadura = Rodadura::create([
+                        'id_Ejes'=>$rod['id_Ejes'] ?? null,
+                        'estacion_inicial'=>$rod['estacion_inicial'] ?? null,
+                        'estacion_final'=>$rod['estacion_final'] ?? null,
+                        'ancho_prom'=>$rod['ancho_prom'] ?? 0,
+                        'm2'=>$rod['m2'] ?? 0,
+                        'rendimiento_m3'=>$rod['rendimiento_m3'] ?? 0,
+                        'Estado'=>1,
+                    ]);
+
+                    TramoElemento::create([
+                        'id_tramo'=>$tramo->id_tramo,
+                        'id_rodadura'=>$rodadura->id_rodadura,
+                        'id_cuneta'=>null,
+                        'Estado'=>1,
+                    ]);
+                }
+            }
+
+            // Cunetas
+            if ($request->has('cunetas') && is_array($request->cunetas)) {
+                foreach ($request->cunetas as $cun) {
+                    if(empty($cun['id_Ejes']) && empty($cun['estacion_inicial']) && empty($cun['estacion_final'])) continue;
+
+                    $cuneta = Cuneta::create([
+                        'id_Ejes'=>$cun['id_Ejes'] ?? null,
+                        'estacion_inicial'=>$cun['estacion_inicial'] ?? null,
+                        'estacion_final'=>$cun['estacion_final'] ?? null,
+                        'ancho_prom'=>$cun['ancho_prom'] ?? 0,
+                        'm2'=>$cun['m2'] ?? 0,
+                        'rendimiento_m3'=>$cun['rendimiento_m3'] ?? 0,
+                        'Estado'=>1,
+                    ]);
+
+                    TramoElemento::create([
+                        'id_tramo'=>$tramo->id_tramo,
+                        'id_rodadura'=>null,
+                        'id_cuneta'=>$cuneta->id_cuneta,
+                        'Estado'=>1,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('tramos.index')->with('success','Tramo guardado correctamente.');
+        }
+        catch(\Exception $e) {
+            DB::rollBack();
+            dd('❌ Error: '.$e->getMessage());
+        }
+    }
 }

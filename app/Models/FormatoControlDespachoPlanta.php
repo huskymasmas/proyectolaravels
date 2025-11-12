@@ -2,18 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class FormatoControlDespachoPlanta extends Model
 {
-    protected $table = 'tbl_Formato_control_despacho_planta';
+    use HasFactory;
+
+    protected $table = 'tbl_formato_control_despacho_planta';
     protected $primaryKey = 'id_Formato_control_despacho_planta';
     public $timestamps = false;
 
     protected $fillable = [
+        'Fecha',
         'No_envio',
-        'id_Proyecto',
+        'id_Aldea',
+        'Conductor',
         'Tipo_de_Concreto_ps',
         'Cantidad_Concreto_mT3',
         'Concreto_granel_kg',
@@ -31,6 +36,7 @@ class FormatoControlDespachoPlanta extends Model
         'cantidad3',
         'cantidad4',
         'id_Empleados',
+        'Supervisor',
         'Observaciones',
         'Estado',
         'Creado_por',
@@ -39,19 +45,20 @@ class FormatoControlDespachoPlanta extends Model
         'Fecha_actualizacion'
     ];
 
-    // Relaciones
-    public function proyecto()
+    // Relación con aldea
+    public function aldea()
     {
-        return $this->belongsTo(Proyecto::class, 'id_Proyecto', 'id_Proyecto');
+        return $this->belongsTo(Aldea::class, 'id_Aldea', 'id_aldea');
     }
 
+    // Relación con empleado
     public function empleado()
     {
         return $this->belongsTo(Empleado::class, 'id_Empleados', 'id_Empleados');
     }
 
-    // Registrar automáticamente auditoría
-    protected static function boot()
+    // Auditoría automática
+    public static function boot()
     {
         parent::boot();
 

@@ -30,6 +30,8 @@ use App\Http\Controllers\RegistroDiarioController;
 use App\Http\Controllers\DetalleNominaController;
 use App\Http\Controllers\ReporteNominaDetalleController;
 use App\Http\Controllers\ReporteNominaController;
+use App\Http\Controllers\AldeaController;
+use App\Http\Controllers\ControlConcretoDetalleController;
 
 Route::get('/', function () {
 
@@ -45,6 +47,16 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 //rutas para usuarios
 //admin
+
+
+
+
+
+
+
+Route::resource('formato_control_despacho_planta', FormatoControlDespachoPlantaController::class)->middleware(['auth' , 'role:admin']);
+
+Route::resource('aldea', AldeaController::class)->middleware(['auth' , 'role:admin']);
 
 
 Route::get('/reportes/nomina_detalle_empleados', [ReporteNominaDetalleController::class, 'index'])
@@ -63,9 +75,6 @@ Route::resource('control_concreto_campo', ControlConcretoCampoController::class)
 Route::resource('tramo_aplicacion', TramoAplicacionController::class)->middleware(['auth' , 'role:admin']);
 Route::resource('tramos', TramoController::class)->middleware(['auth' , 'role:admin']);
 Route::resource('formato_despacho', FormatoDespachoController::class);
-Route::get('/formato_despacho', [FormatoControlDespachoPlantaController::class, 'Index'])->name('formato_despacho.index');
-Route::get('/formato_despacho/{id}/edit', [FormatoControlDespachoPlantaController::class, 'edit'])->name('formato_despacho.edit');
-Route::put('/formato_despacho/{id}', [FormatoControlDespachoPlantaController::class, 'update'])->name('formato_despacho.update');
 Route::get('/vale_egreso', [ValeEgresoController::class, 'index'])->name('vale_egreso.index')->middleware(['auth' , 'role:admin']);
 Route::get('/vale_egreso/create', [ValeEgresoController::class, 'create'])->name('vale_egreso.create')->middleware(['auth' , 'role:admin']);
 Route::post('/vale_egreso', [ValeEgresoController::class, 'store'])->name('vale_egreso.store')->middleware(['auth' , 'role:admin']);
