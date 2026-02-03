@@ -27,8 +27,8 @@ class TransferenciaController extends Controller
     public function transferir(Request $request)
     {
         $request->validate([
-            'id_bodega_general' => 'required|exists:tbl_Bodega_general,id_Bodega_general',
-            'id_bodega_proyecto' => 'required|exists:tbl_Bodega_para_proyectos,id_Bodega_para_proyectos',
+            'id_bodega_general' => 'required|exists:tbl_bodega_general,id_Bodega_general',
+            'id_bodega_proyecto' => 'required|exists:tbl_bodega_para_proyectos,id_Bodega_para_proyectos',
             'cantidad' => 'required|numeric|min:0.001',
         ]);
 
