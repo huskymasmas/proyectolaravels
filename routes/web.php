@@ -32,11 +32,124 @@ use App\Http\Controllers\ReporteNominaDetalleController;
 use App\Http\Controllers\ReporteNominaController;
 use App\Http\Controllers\AldeaController;
 use App\Http\Controllers\ControlConcretoDetalleController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\TipoDosificacionController;
+use App\Http\Controllers\PlanoController;
+use App\Http\Controllers\BodegaParaProyectosController;
+use App\Http\Controllers\TransferenciaController;
+use App\Http\Controllers\ValeIngresoMaquinariaController;
+use App\Http\Controllers\EstacionBodegaController;
+use App\Http\Controllers\ValeEgreso_MaquinariaController;
+use App\Http\Controllers\MaquinaUsoController;
+use App\Http\Controllers\NominaUnificadaController;
+use App\Http\Controllers\ValeEgresoMaterialesController;
+use App\Http\Controllers\ValeIngresoMaterialesController;
+use App\Http\Controllers\ControlProduccionController;
+use App\Http\Controllers\AvanceTrabajoController;
 
 Route::get('/', function () {
 
     return view('index');
 });
+
+
+
+Route::prefix('avances')->name('avances.')->group(function () {
+    Route::get('/', [AvanceTrabajoController::class, 'index'])->name('index');
+    Route::get('/create', [AvanceTrabajoController::class, 'create'])->name('create');
+    Route::post('/store', [AvanceTrabajoController::class, 'store'])->name('store');
+
+    // AJAX correcto
+    Route::get('/trabajos/{id_aldea}', [AvanceTrabajoController::class, 'getTrabajos']);
+});
+
+
+Route::resource('control_produccion', ControlProduccionController::class)->middleware(['auth' , 'role:admin']);
+Route::get('/control_produccion/siguiente_vale', [ControlProduccionController::class, 'siguienteVale'])
+    ->name('control_produccion.siguiente_vale');
+
+
+Route::resource('vale_ingreso_material', ValeIngresoMaterialesController::class)->middleware(['auth' , 'role:admin']);
+
+Route::resource('vale_egreso_material', ValeEgresoMaterialesController::class)->middleware(['auth' , 'role:admin']);
+
+Route::get('/nomina_unificada', [NominaUnificadaController::class, 'index'])->name('nomina_unificada.index');
+
+Route::get('/reportes/nomina', [ReporteNominaController::class, 'index'])->name('reportes.nomina.index');
+
+Route::get('/reportes/nomina/create', [ReporteNominaController::class, 'create'])
+    ->name('reportes.nomina.create');
+
+Route::post('/reportes/nomina/store', [ReporteNominaController::class, 'store'])
+    ->name('reportes.nomina.store');
+// Grupo de rutas para reportes/nomina
+
+
+Route::prefix('reportes/nomina')->name('reportes.nomina.')->group(function () {
+
+    // Rutas para nómina
+    Route::get('create', [ReporteNominaController::class, 'create'])->name('create');
+    Route::post('store', [ReporteNominaController::class, 'store'])->name('store');
+    Route::get('{id}/edit', [ReporteNominaController::class, 'edit'])->name('edit');
+    Route::put('{id}', [ReporteNominaController::class, 'update'])->name('update');
+    Route::delete('{id}', [ReporteNominaController::class, 'destroy'])->name('destroy');
+
+    // Rutas para detalle de nómina (ahora apuntando a los métodos correctos)
+    Route::get('detalle/create', [ReporteNominaController::class, 'detalleCreate'])->name('detalle.create');
+    Route::post('detalle/store', [ReporteNominaController::class, 'guardarDetalle'])->name('detalle.store');
+    Route::get('detalle/{id}/edit', [ReporteNominaController::class, 'detalleEdit'])->name('detalle.edit');
+    Route::put('detalle/{id}', [ReporteNominaController::class, 'detalleUpdate'])->name('detalle.update');
+    Route::delete('detalle/{id}', [ReporteNominaController::class, 'detalleDestroy'])->name('detalle.destroy');
+});
+
+
+// INDEX de máquinas en uso
+Route::get('maquina_uso', [MaquinaUsoController::class, 'index'])
+    ->name('maquinauso.index')
+    ->middleware(['auth','role:admin']);
+
+// FORM para devolver
+Route::get('maquina_uso/{id}/devolver', [MaquinaUsoController::class, 'formDevolver'])
+    ->name('maquinauso.formDevolver')
+    ->middleware(['auth','role:admin']);
+
+// PROCESAR la devolución
+Route::post('maquina_uso/{id}/procesar-devolucion', [MaquinaUsoController::class, 'procesarDevolucion'])
+    ->name('maquinauso.procesarDevolucion')
+    ->middleware(['auth','role:admin']);
+
+
+Route::resource('estacionbodega', EstacionBodegaController::class)->middleware(['auth' , 'role:admin']);
+Route::resource('valeingres_maquinaria', ValeIngresoMaquinariaController::class)->middleware(['auth' , 'role:admin']);
+
+Route::resource('valeegreso_maquinaria', ValeEgreso_MaquinariaController::class)
+    ->middleware(['auth', 'role:admin']);
+
+
+Route::resource('MaquinaUso', MaquinaUsoController::class)->middleware(['auth' , 'role:admin']);
+
+
+Route::get('bodega-proyectos/crear', [BodegaParaProyectosController::class, 'create'])->name('bodegaparaproyectos.form');
+Route::get('bodega-proyectos/{id}', [BodegaParaProyectosController::class, 'show'])->name('bodegaparaproyectos.show');
+
+
+
+
+// PLANOS
+// Subir plano por trabajo
+Route::post('/planos/store', [PlanoController::class, 'store'])->name('planos.store');
+
+// Subir plano por aldea
+Route::post('/planos/aldea/store', [PlanoController::class, 'storePorAldea'])->name('planos.aldea.store');
+
+
+
+
+
+Route::get('/planos/ver/{id}', [PlanoController::class, 'ver'])->name('planos.ver');
+
+
+
 
 
 
@@ -50,8 +163,18 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 
+Route::get('/transferencias', [TransferenciaController::class, 'index'])->name('transferencia.index');
+Route::post('/transferencias', [TransferenciaController::class, 'transferir'])->name('transferencia.store');
 
 
+Route::resource('tipo_dosificacion', TipoDosificacionController::class);
+
+
+Route::get('/stock_bajo', [StockController::class, 'enviarCorreo']);
+
+
+Route::get('trabajo/export/excel', [TrabajoController::class, 'exportExcel'])->name('trabajo.export.excel');
+Route::get('trabajo/export/pdf', [TrabajoController::class, 'exportPdf'])->name('trabajo.export.pdf');
 
 
 Route::resource('formato_control_despacho_planta', FormatoControlDespachoPlantaController::class)->middleware(['auth' , 'role:admin']);
@@ -63,13 +186,16 @@ Route::get('/reportes/nomina_detalle_empleados', [ReporteNominaDetalleController
     ->name('reportes.nomina_detalle_empleados.index');
 
 
-Route::get('/reportes/nomina', [ReporteNominaController::class, 'index'])->name('reportes.nomina.index');
+
+
+
+Route::resource('bodegaparaproyectos', BodegaParaProyectosController::class);
 
 Route::resource('nomina', NominaController::class)->middleware(['auth' , 'role:admin']);
 Route::resource('detalle_nomina', DetalleNominaController::class)->middleware(['auth' , 'role:admin']);
 Route::resource('registro_diario', RegistroDiarioController::class)->middleware(['auth' , 'role:admin']);
 Route::get('/facturas', [FacturaController::class, 'index'])->name('facturas.index');
-Route::post('/facturas/buscar', [FacturaController::class, 'buscar'])->name('facturas.buscar');
+Route::get('/facturas/buscar', [FacturaController::class, 'buscar'])->name('facturas.buscar');
 Route::get('/facturas/exportar/{numFactura}', [FacturaController::class, 'exportarExcel'])->name('facturas.exportar');
 Route::resource('control_concreto_campo', ControlConcretoCampoController::class)->middleware(['auth' , 'role:admin']);
 Route::resource('tramo_aplicacion', TramoAplicacionController::class)->middleware(['auth' , 'role:admin']);
@@ -98,10 +224,14 @@ Route::resource('nomina', NominaController::class)->middleware(['auth', 'role:ad
 Route::resource('empleados', EmpleadoController::class)->middleware(['auth', 'role:admin']);
 
 
+
 //editor 
 
 
 Route::resource('editor/inicio', EditorController::class)->middleware(['auth' , 'role:editor']);
+Route::prefix('editor')->middleware(['auth','role:editor'])->group(function () {
+    Route::resource('inicio', EditorController::class);
+});
 
 Route::resource('asistencia/asignar', AsistenciaController::class)->middleware(['auth' , 'role:editor']);
 

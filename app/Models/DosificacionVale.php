@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DosificacionVale extends Model
 {
-    protected $table = 'tbl_Dosificacion_vale';
+    protected $table = 'tbl_dosificacion_vale';
     protected $primaryKey = 'id_Dosificacion_vale';
     public $timestamps = false;
 

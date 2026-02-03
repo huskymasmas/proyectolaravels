@@ -26,17 +26,25 @@ class Nomina extends Model
         'Creado_por',
         'Actualizado_por'
     ];
+        public function detalles()
+    {
+        return $this->hasMany(DetalleNomina::class, 'id_Nomina', 'id_Nomina');
+    }
 
-    // 🔹 Campos de auditoría automáticos
+    /**
+     * Campos de auditoría automáticos
+     */
     protected static function boot()
     {
         parent::boot();
 
+        // Evento al crear
         static::creating(function ($model) {
             $model->Creado_por = Auth::id();
             $model->Fecha_creacion = now();
         });
 
+        // Evento al actualizar
         static::updating(function ($model) {
             $model->Actualizado_por = Auth::id();
             $model->Fecha_actualizacion = now();

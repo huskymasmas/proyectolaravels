@@ -49,6 +49,7 @@
                 <th>Descripción</th>
                 <th>Ubicación</th>
                 <th>Acciones</th>
+                <th>Bodega</th>
             </tr>
         </thead>
         <tbody>
@@ -67,6 +68,15 @@
                                 onclick="return confirm('¿Seguro que quieres eliminar este proyecto?')">Eliminar</button>
                         </form>
                     </td>
+                    <td>
+                <a href="{{ route('bodegaparaproyectos.index', ['id_Proyecto' => $proyecto->id_Proyecto]) }}" 
+                class="btn btn-primary btn-sm">
+                Ver y Agregar Bodega
+            </a>
+            </td>
+
+                    </td>
+
                 </tr>
             @endforeach
         </tbody>

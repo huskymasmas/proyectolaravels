@@ -48,7 +48,6 @@
                         <th>Temperatura</th>
                         <th>Rodaduras</th>
                         <th>Cunetas</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,9 +90,6 @@
                             @else
                                 <em class="text-muted">Sin cunetas</em>
                             @endif
-                        </td>
-                        <td class="text-center">
-                            <a href="{{ route('tramos.show', $tramo->id_tramo) }}" class="btn btn-sm btn-info">Ver</a>
                         </td>
                     </tr>
                     @empty

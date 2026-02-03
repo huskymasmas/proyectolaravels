@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AditivoAplicados extends Model
 {
-    protected $table = 'tbl_Aditivo_aplicados';
+    protected $table = 'tbl_aditivo_aplicados';
     protected $primaryKey = 'id_Aditivo_aplicados';
     public $timestamps = false;
 

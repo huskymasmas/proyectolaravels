@@ -40,7 +40,7 @@
         <tbody>
             @foreach ($bodegas as $bodega)
                 <tr>
-                    <td>{{ $bodega->No_vale }}</td>
+                    <td>{{ $bodega->id_Bodega_proyecto }}</td>
                     <td>{{ \Carbon\Carbon::parse($bodega->Fecha)->format('d/m/Y') }}</td>
                     <td>{{ $bodega->Material }}</td>
                     <td>{{ $bodega->unidad->Nombre ?? '—' }}</td>

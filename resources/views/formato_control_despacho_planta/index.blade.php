@@ -27,7 +27,7 @@
         </div>
     </form>
 
-    <a href="{{ route('formato_control_despacho_planta.create') }}" class="btn btn-success mb-3">➕ Nuevo Registro</a>
+    <a href="{{ route('formato_control_despacho_planta.create') }}" class="btn btn-success mb-3"> Nuevo Registro</a>
 
     <table class="table table-bordered table-striped text-center align-middle">
         <thead class="table-dark">

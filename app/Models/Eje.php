@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Eje extends Model
 {
-    protected $table = 'tbl_Ejes'; 
+    protected $table = 'tbl_ejes'; 
     protected $primaryKey = 'id_Ejes';
     public $timestamps = false;
 

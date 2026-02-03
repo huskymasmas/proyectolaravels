@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProyectoDetalle extends Model
 {
-    protected $table = 'tbl_Proyecto_detalle';
+    protected $table = 'tbl_proyecto_detalle';
     protected $primaryKey = 'id_Proyecto_detalle';
     public $timestamps = false;
 

@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Configuracion extends Model
 {
-    protected $table = 'tbl_Configuracion';
+    protected $table = 'tbl_configuracion';
     protected $primaryKey = 'id_Configuracion';
     public $timestamps = false;
 

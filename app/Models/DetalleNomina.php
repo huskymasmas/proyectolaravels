@@ -25,11 +25,17 @@ class DetalleNomina extends Model
         'Fecha_actualizacion'
     ];
 
-    // Relación con Empleado
-    public function empleado()
-    {
-        return $this->belongsTo(Empleado::class, 'id_Empleados', 'id_Empleados');
-    }
+public function empleado()
+{
+    return $this->belongsTo(Empleado::class, 'id_Empleados', 'id_Empleados');
+}
+
+public function nomina()
+{
+    return $this->belongsTo(Nomina::class, 'id_Nomina', 'id_Nomina');
+}
+
+
 
     // Método para calcular el total a pagar con JOIN
     public static function calcularTotal($idEmpleado, $horasExtras, $cantidadDias)

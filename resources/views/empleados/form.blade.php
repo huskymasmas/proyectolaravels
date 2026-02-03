@@ -107,7 +107,7 @@
         <option value="">Seleccione...</option>
         @foreach($nominas as $nomina)
             <option value="{{ $nomina->id_Nomina }}" {{ old('id_Nomina', $empleado->id_Nomina) == $nomina->id_Nomina ? 'selected' : '' }}>
-                {{ $nomina->sueldo_Base . "" . nomina }}
+                {{ $nomina->sueldo_Base . "" . $nomina->Descripcion }}
             </option>
         @endforeach
     </select>

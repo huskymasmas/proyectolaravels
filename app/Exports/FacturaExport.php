@@ -14,7 +14,6 @@ class FacturaExport implements FromCollection, WithHeadings, WithEvents
     protected $total_gen;
     protected $numRows;
 
-    // 🔹 Recibimos el número de factura al construir el objeto
     public function __construct($numFactura)
     {
         $this->numFactura = $numFactura;
@@ -22,14 +21,43 @@ class FacturaExport implements FromCollection, WithHeadings, WithEvents
 
     public function collection()
     {
-        // 🔸 Traer los datos de la factura
-        $data = DB::table('tbl_vale_ingreso')
-            ->select('Num_factura', 'nit','precio_total', 'Cantidad')
+        // 🔹 MATERIAL (tbl_vale_ingreso)
+        $materiales = DB::table('tbl_vale_ingreso')
+            ->select('Num_factura', 'nit', 'precio_total', 'cantidad')
             ->where('Num_factura', $this->numFactura)
-            ->get();
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'tipo' => 'Material',
+                    'Num_factura' => $item->Num_factura,
+                    'nit' => $item->nit,
+                    'precio' => $item->precio_total,
+                    'cantidad' => $item->cantidad,
+                ];
+            });
 
-        // 🔹 Guardamos total y número de filas
-        $this->total_gen = $data->sum('precio_total');
+        // 🔹 MAQUINARIA (tbl_vale_ingreso_equipo_maquinaria_vehiculo)
+        $maquinaria = DB::table('tbl_vale_ingreso_equipo_maquinaria_vehiculo')
+            ->select('Num_factura', 'nit', 'costo', 'cantidad')
+            ->where('Num_factura', $this->numFactura)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'tipo' => 'Maquinaria',
+                    'Num_factura' => $item->Num_factura,
+                    'nit' => $item->nit,
+                    'precio' => $item->costo,
+                    'cantidad' => $item->cantidad,
+                ];
+            });
+
+        // 🔹 Unimos ambas colecciones
+        $data = $materiales->merge($maquinaria);
+
+        // 🔹 Total general
+        $this->total_gen = $data->sum('precio');
+
+        // 🔹 Cantidad de filas para ubicar el TOTAL
         $this->numRows = $data->count();
 
         return $data;
@@ -38,9 +66,10 @@ class FacturaExport implements FromCollection, WithHeadings, WithEvents
     public function headings(): array
     {
         return [
+            'Tipo',
             'Número de Factura',
             'NIT',
-            'Precio Total',
+            'Precio',
             'Cantidad',
         ];
     }
@@ -49,14 +78,14 @@ class FacturaExport implements FromCollection, WithHeadings, WithEvents
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                // 🔹 Fila donde se colocará el total (1 por encabezado + filas + 1 de espacio)
-                $row = $this->numRows + 2;
 
-                // 🔸 Escribe el total
-                $event->sheet->setCellValue('A' . $row, 'TOTAL');
+                $row = $this->numRows + 2; // 1 encabezado + filas + 1 espacio
+
+                // 🔸 Escribir total general
+                $event->sheet->setCellValue('A' . $row, 'TOTAL GENERAL');
                 $event->sheet->setCellValue('B' . $row, $this->total_gen);
 
-                // 🔸 Aplica estilo negrita
+                // 🔸 Estilo negrita
                 $event->sheet->getStyle('A' . $row . ':B' . $row)->applyFromArray([
                     'font' => ['bold' => true],
                 ]);

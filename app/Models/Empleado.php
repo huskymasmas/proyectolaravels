@@ -10,32 +10,28 @@ class Empleado extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_Empleados';
+    protected $table = 'tbl_empleados';
     protected $primaryKey = 'id_Empleados';
     public $incrementing = true;
     public $timestamps = false;
 
-    protected $fillable = [
-        'id_Departamento',
-        'Nombres',
-        'Apellido',
-        'Apellido2',
-        'Sexo',
-        'Fecha_nacimiento',
-        'Fecha_inicio',
-        'DPI',
-        'Numero',
-        'id_Rol',
-        'Estado',
-        'Codigo_empleado',
-        'Estado_trabajo',
-        'Tipo_contrato',
-        'id_Nomina',
-        'Creado_por',
-        'Actualizado_por',
-        'Fecha_creacion',
-        'Fecha_actualizacion',
-    ];
+  protected $fillable = [
+    'id_Departamento',
+    'Nombres',
+    'Apellido',
+    'Apellido2',
+    'Sexo',
+    'Fecha_nacimiento',
+    'Fecha_inicio',
+    'DPI',
+    'Numero',
+    'id_Rol',
+    'Codigo_empleado',
+    'Estado_trabajo',
+    'Tipo_contrato',
+    'id_Nomina',
+];
+
 
     // RELACIONES
     public function nomina()

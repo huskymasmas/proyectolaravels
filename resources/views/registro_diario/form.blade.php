@@ -32,25 +32,6 @@
 
         <div class="row mb-3">
             <div class="col-md-3">
-                <label>Código:</label>
-                <input type="text" id="Codigo_empleado" class="form-control" >
-            </div>
-            <div class="col-md-3">
-                <label>Nombre:</label>
-                <input type="text" id="Nombre_empleado" class="form-control" >
-            </div>
-            <div class="col-md-3">
-                <label>Puesto:</label>
-                <input type="text" id="Puesto" class="form-control" >
-            </div>
-            <div class="col-md-3">
-                <label>Viáticos (Q):</label>
-                <input type="number" id="Viaticos" class="form-control" >
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-3">
                 <label>Días Viáticos:</label>
                 <input type="number" step="1" name="dias_viaticos" id="dias_viaticos" class="form-control">
             </div>
@@ -67,12 +48,13 @@
                 <input type="number" step="0.01" name="Adelantos" id="Adelantos" class="form-control">
             </div>
             <div class="col-md-2">
-                <label>Total Día (Q):</label>
-                <input type="number" step="0.01" name="Total_dia" id="Total_dia" class="form-control" >
+                <label>Pago Parcial (Q)</label>
+                <input type="number" step="0.01" name="Pago_Parcial" id="Pago_Parcial" class="form-control">
             </div>
+
         </div>
 
-        <button class="btn btn-success mt-3">💾 Guardar</button>
+        <button class="btn btn-success mt-3">Guardar</button>
     </form>
 </div>
 

@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class ValeDespacho extends Model
 {
-    protected $table = 'tbl_Vale_despacho';
+    protected $table = 'tbl_vale_despacho';
     protected $primaryKey = 'id_Vale_despacho';
     public $timestamps = false;
 
     protected $fillable = [
         'No_vale','id_Despacho_concreto','id_Dosificacion_vale','id_Aditivo_aplicados',
-        'Estado','Creado_por','Fecha_creacion'
+        'Estado','Creado_por','Fecha_creacion', 'usado'
     ];
 
     // Relaciones

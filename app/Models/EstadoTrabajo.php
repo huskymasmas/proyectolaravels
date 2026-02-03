@@ -9,7 +9,7 @@ class EstadoTrabajo extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_Estado_trabajo';
+    protected $table = 'tbl_estado_trabajo';
     protected $primaryKey = 'id_Estado_trabajo';
     public $timestamps = false;
 

@@ -10,7 +10,7 @@ class DetalleObra extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_Detalle_obra';
+    protected $table = 'tbl_detalle_obra';
     protected $primaryKey = 'id_Detalle_obra';
     public $timestamps = false;
 

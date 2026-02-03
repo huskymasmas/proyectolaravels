@@ -39,19 +39,19 @@
 
       
 
-        <div class="mb-3"><label>Cemento (kg/m3)</label>
+        <div class="mb-3"><label>Cemento kg</label>
             <input  name="Cemento" class="form-control" value="{{ $dosificacion->Cemento ?? '' }}" required>
         </div>
 
-        <div class="mb-3"><label>Arena (m3/m3)</label>
+        <div class="mb-3"><label>Arena m3</label>
             <input  name="Arena" class="form-control" value="{{ $dosificacion->Arena ?? '' }}" required>
         </div>
 
-        <div class="mb-3"><label>Pedrín (m3/m3)</label>
+        <div class="mb-3"><label>Pedrín m3</label>
             <input name="Pedrin" class="form-control" value="{{ $dosificacion->Pedrin ?? '' }}" required>
         </div>
 
-        <div class="mb-3"><label>Aditivo (L/m3)</label>
+        <div class="mb-3"><label>Aditivo m3 </label>
             <input  name="Aditivo" class="form-control" value="{{ $dosificacion->Aditivo ?? '' }}">
         </div>
 

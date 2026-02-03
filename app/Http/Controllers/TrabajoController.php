@@ -3,108 +3,171 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trabajo;
-use App\Models\Unidad;
-use App\Models\Proyecto;
+use App\Models\Aldea;
 use App\Models\EstadoTrabajo;
+use App\Models\Unidad;
+use App\Models\Plano;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TrabajoExport;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class TrabajoController extends Controller
 {
-    public function index(Request $request)
-    {
-    $proyectos = Proyecto::all();
-    $idProyecto = $request->id_Proyecto;
+    /** Listar */
+ public function index(Request $request)
+{
+    $aldeas = Aldea::all();
+    $trabajos = Trabajo::with(['aldea', 'estadoTrabajo', 'unidad', 'planos'])
+                        ->when($request->aldea, function($q) use ($request) {
+                            $q->where('id_aldea', $request->aldea);
+                        })
+                        ->get();
 
-         // Si se selecciona un proyecto, filtramos por ese ID
-        $trabajos = Trabajo::with(['proyecto', 'estadoTrabajo', 'unidad'])
-        ->when($idProyecto, function ($query) use ($idProyecto) {
-            $query->whereHas('proyecto', function ($subquery) use ($idProyecto) {
-                $subquery->where('id_Proyecto', $idProyecto);
-            });
-        })
-         ->orderBy('Numero_face', 'ASC')
-        ->get();
-
-        return view('trabajo.index', compact('trabajos', 'proyectos', 'idProyecto'));
+    // Traer planos de la aldea seleccionada
+    $planosAldea = [];
+    if ($request->aldea) {
+        $planosAldea = Plano::where('id_aldea', $request->aldea)->get();
     }
 
+    return view('trabajo.index', compact('aldeas', 'trabajos', 'planosAldea'));
+}
+
+
+    /** Crear */
     public function create()
     {
-        $proyectos = Proyecto::all();
+        $aldeas = Aldea::all();
         $estados = EstadoTrabajo::all();
         $unidades = Unidad::all();
-        return view('trabajo.form', compact('proyectos', 'estados', 'unidades'));
+
+        return view('trabajo.form', compact('aldeas', 'estados', 'unidades'));
     }
 
+    /** Guardar */
     public function store(Request $request)
     {
         $request->validate([
-            'id_Proyecto' => 'required|integer',
-            'Numero_face' => 'required|numeric',
-            'Nombre_face' => 'required|string|max:255',
-            'id_Estado_trabajo' => 'required|integer',
-            'Cantidad' => 'required|numeric',
-            'id_Unidades' => 'required|integer',
-            'Estado' => 'required|in:0,1'
+            'id_aldea' => 'required',
+            'numero_face' => 'required',
+            'nombre_face' => 'required',
+            'id_Estado_trabajo' => 'required',
+            'cantidad' => 'required|numeric',
+            'id_Unidades' => 'required',
+            'CostoQ' => 'required|numeric',
         ]);
 
-        Trabajo::create([
-            'id_Proyecto' => $request->id_Proyecto,
-            'Numero_face' => $request->Numero_face,
-            'Nombre_face' => $request->Nombre_face,
+        $subtotal = $request->cantidad * $request->CostoQ;
+
+        $trabajo = Trabajo::create([
+            'id_aldea' => $request->id_aldea,
+            'numero_face' => $request->numero_face,
+            'nombre_face' => $request->nombre_face,
             'id_Estado_trabajo' => $request->id_Estado_trabajo,
-            'Cantidad' => $request->Cantidad,
+            'cantidad' => $request->cantidad,
             'id_Unidades' => $request->id_Unidades,
-            'Estado' => $request->Estado,
-            'Creado_por' => Auth::id(),
-            'Actualizado_por' => Auth::id(),
-            'Fecha_creacion' => Carbon::now(),
-            'Fecha_actualizacion' => Carbon::now(),
+            'CostoQ' => $request->CostoQ,
+            'Subtotal' => $subtotal,
+            'estado' => 1,
+            'creado_por' => Auth::id(),
+            'fecha_creacion' => now(),
         ]);
 
-        return redirect()->route('trabajo.index')->with('success', 'Trabajo creado correctamente.');
+        /** Guardar planos PDF */
+        if ($request->hasFile('planos')) {
+            foreach ($request->file('planos') as $file) {
+                Plano::create([
+                    'nombre' => $file->getClientOriginalName(),
+                    'datos' => file_get_contents($file->getRealPath()),
+                    'id_aldea' => $request->id_aldea,
+                    'id_trabajo' => $trabajo->id_trabajos,
+                    'Creado_por' => Auth::id(),
+                    'Fecha_creacion' => now(),
+                ]);
+            }
+        }
+
+        return redirect()->route('trabajo.index')
+            ->with('success', 'Trabajo registrado correctamente.');
     }
 
-    public function edit(Trabajo $trabajo)
+    /** Editar */
+    public function edit($id)
     {
-        $proyectos = Proyecto::all();
+        $trabajo = Trabajo::with('planos')->findOrFail($id);
+        $aldeas = Aldea::all();
         $estados = EstadoTrabajo::all();
         $unidades = Unidad::all();
-        return view('trabajo.form', compact('trabajo', 'proyectos', 'estados', 'unidades'));
+
+        return view('trabajo.form', compact('trabajo', 'aldeas', 'estados', 'unidades'));
     }
 
-    public function update(Request $request, Trabajo $trabajo)
+    /** Actualizar */
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'id_Proyecto' => 'required|integer',
-            'Numero_face' => 'required|numeric',
-            'Nombre_face' => 'required|string|max:255',
-            'id_Estado_trabajo' => 'required|integer',
-            'Cantidad' => 'required|numeric',
-            'id_Unidades' => 'required|integer',
-            'Estado' => 'required|in:0,1'
+            'id_aldea' => 'required',
+            'numero_face' => 'required',
+            'nombre_face' => 'required',
+            'id_Estado_trabajo' => 'required',
+            'cantidad' => 'required|numeric',
+            'id_Unidades' => 'required',
+            'CostoQ' => 'required|numeric',
         ]);
+
+        $trabajo = Trabajo::findOrFail($id);
 
         $trabajo->update([
-            'id_Proyecto' => $request->id_Proyecto,
-            'Numero_face' => $request->Numero_face,
-            'Nombre_face' => $request->Nombre_face,
+            'id_aldea' => $request->id_aldea,
+            'numero_face' => $request->numero_face,
+            'nombre_face' => $request->nombre_face,
             'id_Estado_trabajo' => $request->id_Estado_trabajo,
-            'Cantidad' => $request->Cantidad,
+            'cantidad' => $request->cantidad,
             'id_Unidades' => $request->id_Unidades,
-            'Estado' => $request->Estado,
-            'Actualizado_por' => Auth::id(),
-            'Fecha_actualizacion' => Carbon::now(),
+            'CostoQ' => $request->CostoQ,
+            'Subtotal' => $request->cantidad * $request->CostoQ,
+            'actualizado_por' => Auth::id(),
+            'fecha_actualizacion' => now(),
         ]);
 
-        return redirect()->route('trabajo.index')->with('success', 'Trabajo actualizado correctamente.');
+        /** Guardar nuevos planos */
+        if ($request->hasFile('planos')) {
+            foreach ($request->file('planos') as $file) {
+                Plano::create([
+                    'nombre' => $file->getClientOriginalName(),
+                    'datos' => file_get_contents($file->getRealPath()),
+                    'id_aldea' => $request->id_aldea,
+                    'id_trabajo' => $trabajo->id_trabajos,
+                    'Creado_por' => Auth::id(),
+                    'Fecha_creacion' => now(),
+                ]);
+            }
+        }
+
+        return redirect()->route('trabajo.index')
+            ->with('success', 'Trabajo actualizado correctamente.');
     }
 
-    public function destroy(Trabajo $trabajo)
+    /** Exportar Excel */
+    public function exportExcel(Request $request)
     {
-        $trabajo->delete();
-        return redirect()->route('trabajo.index')->with('success', 'Trabajo eliminado correctamente.');
+        return Excel::download(new TrabajoExport($request->aldea), 'trabajos.xlsx');
+    }
+
+    /** Exportar PDF con anexos */
+    public function exportPdf(Request $request)
+    {
+        $query = Trabajo::with(['aldea', 'estadoTrabajo', 'unidad', 'planos']);
+
+        if ($request->filled('aldea')) {
+            $query->where('id_aldea', $request->aldea);
+        }
+
+        $trabajos = $query->get();
+
+        $pdf = PDF::loadView('trabajo.pdf', compact('trabajos'));
+
+        return $pdf->download('trabajos.pdf');
     }
 }

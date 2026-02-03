@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tipo_dosificador extends Model
 {
-    protected $table = 'tbl_Tipo_dosificacion';
+    protected $table = 'tbl_tipo_dosificacion';
     protected $primaryKey = 'id_Tipo_dosificacion';
     public $timestamps = false;
 

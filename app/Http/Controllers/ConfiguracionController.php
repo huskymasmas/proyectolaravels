@@ -21,14 +21,14 @@ class ConfiguracionController extends Controller
             })
             ->get();
 
-        return view('configuracion.index', compact('configuraciones', 'proyectos', 'idProyecto'));
+        return view('Configuracion.index', compact('configuraciones', 'proyectos', 'idProyecto'));
     }
 
     // Mostrar formulario para crear
     public function create()
     {
         $proyectos = Proyecto::all();
-        return view('configuracion.form', compact('proyectos'));
+        return view('Configuracion.form', compact('proyectos'));
     }
 
     // Guardar nueva configuración

@@ -11,106 +11,94 @@ use Illuminate\Support\Facades\Auth;
 
 class EmpleadoController extends Controller
 {
-    /**
-     * Lista de empleados
-     */
     public function index()
     {
-        $empleados = Empleado::with(['nomina'])->get();
+        $empleados = Empleado::with(['departamento', 'rol', 'nomina'])->get();
         return view('empleados.index', compact('empleados'));
     }
 
-    /**
-     * Formulario para crear un empleado
-     */
     public function create()
     {
-        $departamentos = Departamento::all();
-        $roles = Rol::all();
-        $nominas = Nomina::all();
-
-         return view('empleados.form', [
-        'empleado' => new Empleado(),
-        'departamentos' => $departamentos,
-        'roles' => $roles,
-        'nominas' => $nominas
+        return view('empleados.form', [
+            'empleado' => new Empleado(),
+            'departamentos' => Departamento::all(),
+            'roles' => Rol::all(),
+            'nominas' => Nomina::all(),
         ]);
     }
 
-    /**
-     * Guardar un nuevo empleado
-     */
     public function store(Request $request)
     {
         $validated = $this->validateEmpleado($request);
 
-       $empleado = Empleado::findOrFail($id);
-    $departamentos = Departamento::all();
-    $roles = Rol::all();
-    $nominas = Nomina::all(); // <-- agregamos las nóminas
+        $empleado = new Empleado();
+        $empleado->fill($validated);
 
-    return view('empleados.form', compact('empleado', 'departamentos', 'roles', 'nominas'));
+        // Auditoría
+        $empleado->Creado_por = Auth::id();
+        $empleado->Fecha_creacion = now();
+
+        $empleado->Estado = 1; // Activo siempre al crear
+
+        $empleado->save();
+
+        return redirect()
+            ->route('empleados.index')
+            ->with('success', 'Empleado guardado correctamente.');
     }
 
-    /**
-     * Formulario para editar empleado
-     */
     public function edit($id)
     {
         $empleado = Empleado::findOrFail($id);
-        $departamentos = Departamento::all();
-        $roles = Rol::all();
 
-        return view('empleados.form', compact('empleado', 'departamentos', 'roles'));
+        return view('empleados.form', [
+            'empleado' => $empleado,
+            'departamentos' => Departamento::all(),
+            'roles' => Rol::all(),
+            'nominas' => Nomina::all(),
+        ]);
     }
 
-    /**
-     * Actualizar un empleado
-     */
     public function update(Request $request, $id)
     {
-        $empleado = Empleado::findOrFail($id);
-        $validated = $this->validateEmpleado($request, $empleado->id_Empleados);
+        $validated = $this->validateEmpleado($request);
 
+        $empleado = Empleado::findOrFail($id);
         $empleado->fill($validated);
+
+        // Auditoría
         $empleado->Actualizado_por = Auth::id();
         $empleado->Fecha_actualizacion = now();
+
         $empleado->save();
 
-        return redirect()->route('empleados.index')->with('success', 'Empleado actualizado correctamente.');
+        return redirect()
+            ->route('empleados.index')
+            ->with('success', 'Empleado actualizado correctamente.');
     }
 
-    /**
-     * Eliminar un empleado
-     */
-    public function destroy($id)
-    {
-        $empleado = Empleado::findOrFail($id);
-        $empleado->delete();
-
-        return redirect()->route('empleados.index')->with('success', 'Empleado eliminado correctamente.');
-    }
-
-    /**
-     * Validaciones comunes
-     */
-    protected function validateEmpleado(Request $request, $id = null)
+    private function validateEmpleado(Request $request)
     {
         return $request->validate([
-            'id_Departamento'   => 'required|integer',
-            'id_Rol'            => 'required|integer',
-            'Nombres'           => 'required|string|max:255',
-            'Apellido'          => 'required|string|max:255',
-            'Apellido2'         => 'nullable|string|max:255',
-            'Sexo'              => 'required|in:M,F',
-            'Fecha_nacimiento'  => 'required|date',
-            'Fecha_inicio'      => 'required|date',
-            'DPI'               => 'required|string|max:20|unique:tbl_Empleados,DPI,' . $id . ',id_Empleados',
-            'Numero'            => 'required|string|max:20',
-            'Estado_trabajo'    => 'required|in:Activo,Inactivo',
-            'Tipo_contrato'     => 'required|in:Planilla,No Planilla',
-            'Codigo_empleado'   => 'required|string|max:50|unique:tbl_Empleados,Codigo_empleado,' . $id . ',id_Empleados',
-            'id_Nomina'         => 'nullable|integer',
+            'id_Departamento' => 'required|integer',
+            'id_Rol' => 'required|integer',
+
+            'Estado_trabajo' => 'required|in:Activo,Inactivo',
+            'Tipo_contrato' => 'required|in:Planilla,No Planilla',
+
+            'Nombres' => 'required|string|max:255',
+            'Apellido' => 'required|string|max:255',
+            'Apellido2' => 'nullable|string|max:255',
+
+            'Sexo' => 'required|in:M,F',
+            'Fecha_nacimiento' => 'required|date',
+            'Fecha_inicio' => 'required|date',
+
+            'DPI' => 'required|string|max:25',
+            'Numero' => 'required|string|max:20',
+
+            'Codigo_empleado' => 'required|string|max:255',
+            'id_Nomina' => 'nullable|integer',
         ]);
     }
 }

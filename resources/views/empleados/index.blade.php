@@ -14,7 +14,7 @@
     @endif
 
     <div class="mb-3">
-        <a href="{{ route('empleados.create') }}" class="btn btn-primary">➕ Nuevo Empleado</a>
+        <a href="{{ route('empleados.create') }}" class="btn btn-primary"> Nuevo Empleado</a>
     </div>
 
     <table id="empleadosTable" class="table table-striped table-bordered align-middle">
@@ -43,11 +43,11 @@
                     <td>{{ $empleado->Estado_trabajo }}</td>
                     <td>{{ $empleado->Codigo_empleado }}</td>
                     <td>
-                        <a href="{{ route('empleados.edit', $empleado->id_Empleados) }}" class="btn btn-warning btn-sm">✏️ Editar</a>
+                        <a href="{{ route('empleados.edit', $empleado->id_Empleados) }}" class="btn btn-warning btn-sm"> Editar</a>
                         <form action="{{ route('empleados.destroy', $empleado->id_Empleados) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este empleado?')">🗑️ Eliminar</button>
+                            <button class="btn btn-danger btn-sm" onclick="return confirm('¿Seguro que deseas eliminar este empleado?')"> Eliminar</button>
                         </form>
                     </td>
                 </tr>

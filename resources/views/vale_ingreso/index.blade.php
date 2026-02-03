@@ -5,8 +5,8 @@
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>📋 Lista de Vales de Ingreso</h3>
-        <a href="{{ route('vale_ingreso.create') }}" class="btn btn-primary">➕ Nuevo Vale</a>
+        <h3> Lista de Vales de Ingreso</h3>
+        <a href="{{ route('vale_ingreso.create') }}" class="btn btn-primary"> Nuevo Vale</a>
     </div>
 
     @if (session('success'))

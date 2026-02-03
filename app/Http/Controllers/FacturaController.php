@@ -30,14 +30,26 @@ class FacturaController extends Controller
             ->select('Num_factura', 'nit', 'precio_total', 'cantidad')
             ->where('Num_factura', $numFactura)
             ->get();
+        
+        $registros2 = DB::table('tbl_vale_ingreso_equipo_maquinaria_vehiculo')
+            ->select('Num_factura', 'nit', 'costo', 'cantidad')
+            ->where('Num_factura', $numFactura)
+            ->get();
+
 
         // 🔸 Calcular el total de precio_total
         $total = DB::table('tbl_vale_ingreso')
             ->where('Num_factura', $numFactura)
             ->sum('precio_total');
+            // 🔸 Calcular el total de precio_total
+        $total2 = DB::table('tbl_vale_ingreso_equipo_maquinaria_vehiculo')
+            ->where('Num_factura', $numFactura)
+            ->sum('costo');
+
+        $totaltotal = $total + $total2;
 
         // 🔸 Retornar la vista con los resultados
-        return view('facturas.buscar', compact('registros', 'total', 'numFactura'));
+        return view('facturas.buscar', compact('registros', 'totaltotal', 'numFactura' , 'registros2'));
     }
 
     public function exportarExcel($numFactura)

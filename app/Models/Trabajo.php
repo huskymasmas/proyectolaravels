@@ -14,31 +14,36 @@ class Trabajo extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_Proyecto',
-        'Numero_face',
-        'Nombre_face',
+        'id_aldea',
+        'numero_face',
+        'nombre_face',
         'id_Estado_trabajo',
-        'Cantidad',
+        'cantidad',
         'id_Unidades',
-        'Estado',
-        'Creado_por',
-        'Actualizado_por',
-        'Fecha_creacion',
-        'Fecha_actualizacion'
+        'CostoQ',
+        'estado',
+        'creado_por',
+        'actualizado_por',
+        'fecha_creacion',
+        'fecha_actualizacion'
     ];
 
-    public function proyecto()
+    // Relaciones
+    public function aldea()
     {
-        return $this->belongsTo(Proyecto::class, 'id_Proyecto', 'id_Proyecto');
+        return $this->belongsTo(Aldea::class, 'id_aldea', 'id_aldea');
     }
-
-    public function estadoTrabajo()
-    {
-        return $this->belongsTo(EstadoTrabajo::class, 'id_Estado_trabajo', 'id_Estado_trabajo');
-    }
+public function estadoTrabajo()
+{
+    return $this->belongsTo(EstadoTrabajo::class, 'id_Estado_trabajo', 'id_Estado_trabajo');
+}
 
     public function unidad()
     {
         return $this->belongsTo(Unidad::class, 'id_Unidades', 'id_Unidades');
+    }
+    public function planos()
+    {
+        return $this->hasMany(Plano::class, 'id_trabajo');
     }
 }

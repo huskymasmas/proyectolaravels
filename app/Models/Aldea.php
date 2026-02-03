@@ -21,6 +21,10 @@ class Aldea extends Model
     {
         return $this->hasMany(Tramo::class, 'id_aldea', 'id_aldea');
     }
+      public function proyecto()
+    {
+        return $this->belongsTo(Proyecto::class, 'id_proyecto', 'id_proyecto');
+    }
 
     protected static function boot()
     {
