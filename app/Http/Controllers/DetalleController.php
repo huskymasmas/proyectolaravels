@@ -43,7 +43,7 @@ class DetalleController extends Controller
             'id_Proyecto' => 'required|exists:tbl_proyecto,id_Proyecto',
             'Tipo_Obra' => 'nullable|string|max:255',
             'Valor' => 'required|numeric',
-            'id_Unidades' => 'required|exists:tbl_Unidades,id_Unidades',
+            'id_Unidades' => 'required|exists:tbl_unidades,id_Unidades',
             'Detalle' => 'nullable|string|max:255',
             'Calculo' => 'required|numeric',
             'Descripcion' => 'nullable|string|max:255'
