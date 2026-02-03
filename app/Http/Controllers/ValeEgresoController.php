@@ -186,27 +186,33 @@ class ValeEgresoController extends Controller
         }
     }
 
-    private function descontarDeBodega($nombre,$cantidad,$proyecto)
-    {
-        $producto = BodegaParaProyectos::where('id_Proyecto',$proyecto)
-            ->where('Material','LIKE',"%{$nombre}%")
-            ->firstOrFail();
+ private function descontarDeBodega($nombre,$cantidad,$proyecto)
+{
+    $producto = BodegaParaProyectos::where('id_Proyecto',$proyecto)
+        ->where('Material','LIKE',"%{$nombre}%")
+        ->first();
 
-        if($producto->Almazenado < $cantidad)
-            throw new \Exception("Stock insuficiente {$nombre}");
-
-        $producto->Almazenado -= $cantidad;
-        $producto->save();
-
-        EstacionBodega::create([
-            'material'=>$nombre,
-            'cantidad'=>$cantidad,
-            'id_Unidades'=>$producto->id_Unidades,
-            'proyecto'=>$proyecto,
-            'Estado'=>1,
-            'Creado_por'=>Auth::id(),
-            'Fecha_creacion'=>now(),
-            'Observacion'=>"Egreso automático"
-        ]);
+    if(!$producto){
+        throw new \Exception("NO EXISTE '{$nombre}' EN BODEGA DEL PROYECTO {$proyecto}");
     }
+
+    if($producto->Almazenado < $cantidad){
+        throw new \Exception("STOCK INSUFICIENTE DE '{$nombre}'");
+    }
+
+    $producto->Almazenado -= $cantidad;
+    $producto->save();
+
+    EstacionBodega::create([
+        'material'=>$nombre,
+        'cantidad'=>$cantidad,
+        'id_Unidades'=>$producto->id_Unidades,
+        'proyecto'=>$proyecto,
+        'Estado'=>1,
+        'Creado_por'=>Auth::id(),
+        'Fecha_creacion'=>now(),
+        'Observacion'=>"Egreso automático"
+    ]);
+}
+
 }
