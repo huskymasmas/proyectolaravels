@@ -38,7 +38,7 @@ class ConfiguracionController extends Controller
             'Parametros' => 'required|string|max:255',
             'Valor' => 'required|string|max:255',
             'NOTAS' => 'nullable|string',
-            'id_Proyecto' => 'nullable|integer|exists:tbl_Proyecto,id_Proyecto'
+            'id_Proyecto' => 'nullable|integer|exists:tbl_proyecto,id_Proyecto'
         ]);
 
         Configuracion::create([
@@ -70,7 +70,7 @@ class ConfiguracionController extends Controller
             'Parametros' => 'required|string|max:255',
             'Valor' => 'required|string|max:255',
             'NOTAS' => 'nullable|string',
-            'id_Proyecto' => 'nullable|integer|exists:tbl_Proyecto,id_Proyecto'
+            'id_Proyecto' => 'nullable|integer|exists:tbl_proyecto,id_Proyecto'
         ]);
 
         $configuracion = Configuracion::findOrFail($id);
