@@ -214,7 +214,7 @@ class ReporteNominaController extends Controller
     public function guardarDetalle(Request $request)
     {
         $request->validate([
-            'id_Empleados' => 'required|integer|exists:tbl_Empleados,id_Empleados',
+            'id_Empleados' => 'required|integer|exists:tbl_empleados,id_Empleados',
             'Horas_extras' => 'required|numeric|min:0',
             'cantidad_dias' => 'required|integer|min:0'
         ]);
