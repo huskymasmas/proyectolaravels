@@ -40,7 +40,7 @@ class DetalleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_Proyecto' => 'required|exists:tbl_Proyecto,id_Proyecto',
+            'id_Proyecto' => 'required|exists:tbl_proyecto,id_Proyecto',
             'Tipo_Obra' => 'nullable|string|max:255',
             'Valor' => 'required|numeric',
             'id_Unidades' => 'required|exists:tbl_Unidades,id_Unidades',
