@@ -147,20 +147,21 @@ public function store(Request $request)
 }
 
 
-    private function obtenerEmpleadoAutenticado()
+private function obtenerEmpleadoAutenticado()
 {
     $usuarioId = Auth::id();
 
     $empleado = DB::table('tbl_empleados')
-        ->where('user_id', $usuarioId)
+        ->where('id_usuario', $usuarioId)
         ->first();
 
     if (!$empleado) {
-        throw new \Exception('El usuario autenticado no tiene empleado asociado');
+        throw new \Exception('Usuario sin empleado asociado');
     }
 
     return $empleado;
 }
+
 
     private function calcularTotalCemento($d)
     {
