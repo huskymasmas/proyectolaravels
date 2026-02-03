@@ -199,7 +199,7 @@ class ReporteNominaController extends Controller
      * ============================================================ */
     public function detalleCreate()
     {
-        $empleados = DB::table('tbl_Empleados')
+        $empleados = DB::table('tbl_empleados')
             ->select('id_Empleados', DB::raw("CONCAT(Nombres,' ',Apellido,' ',Apellido2) AS nombre"))
             ->get();
 
