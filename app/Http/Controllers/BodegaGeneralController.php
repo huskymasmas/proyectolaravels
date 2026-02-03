@@ -30,7 +30,7 @@ class BodegaGeneralController extends Controller
         $request->validate([
             'Nombre' => 'required|string|max:255',
             'Cantidad' => 'required|numeric',
-            'id_Unidades' => 'required|exists:tbl_Unidades,id_Unidades',
+            'id_Unidades' => 'required|exists:tbl_unidades,id_Unidades',
         ]);
 
         BodegaGeneral::create([
