@@ -52,12 +52,12 @@
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Número Face</label>
+                <label>Número Fase</label>
                 <input type="text" name="numero_face" value="{{ $trabajo->numero_face ?? '' }}" class="form-control" required>
             </div>
 
             <div class="col-md-4 mb-3">
-                <label>Nombre Face</label>
+                <label>Nombre Fase</label>
                 <input type="text" name="nombre_face" value="{{ $trabajo->nombre_face ?? '' }}" class="form-control" required>
             </div>
 
