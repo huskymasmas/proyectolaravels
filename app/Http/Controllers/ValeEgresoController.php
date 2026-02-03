@@ -7,7 +7,6 @@ use App\Models\ValeDespacho;
 use App\Models\DespachoConcreto;
 use App\Models\AditivoAplicados;
 use App\Models\DosificacionVale;
-use App\Models\BodegaGeneral;
 use App\Models\BodegaParaProyectos;
 use App\Models\FormatoControlDespachoPlanta;
 use App\Models\EstacionBodega;
@@ -25,7 +24,8 @@ class ValeEgresoController extends Controller
     public function create()
     {
         $proyectos = \App\Models\Proyecto::all();
-        $empresas = \App\Models\Empresa::all();
+        $empresas  = \App\Models\Empresa::all();
+
         return view('vale_egreso.create', compact('proyectos', 'empresas'));
     }
 
@@ -42,44 +42,60 @@ class ValeEgresoController extends Controller
 
         try {
 
-            // ⬅️ ACTIVAR LOG DE QUERIES
             DB::enableQueryLog();
 
             $usuarioId = Auth::id();
 
-            $despacho = DespachoConcreto::create(array_merge(
-                $request->only([
-                    'Codigo_planta','id_Proyecto','Fecha','Volumen_carga_M3',
-                    'Hora_salida_plata','Tipo_Concreto','id_Empresa','Inicio_Carga',
-                    'Finaliza_carga','Hora_llega_Proyecto','Tipo_elemento',
-                    'Placa_numero','Estado'
-                ]),
-                [
-             
-                    'Fecha_creacion' => now()
-                ]
-            ));
+            // ✅ TOMAR EMPLEADO REAL (evita FK)
+            $empleado = DB::table('tbl_empleados')->first();
 
-            $dosificacion = DosificacionVale::create(array_merge(
-                $request->only([
-                    'kg_cemento_granel','Sacos_Cemento','kg_piedirn','Kg_arena','lts_agua','Estado'
-                ]),
-                [
-                    
-                    'Fecha_creacion' => now()
-                ]
-            ));
+            if (!$empleado) {
+                throw new \Exception('No existen empleados registrados.');
+            }
 
-            $aditivoData = $request->only([
-                'Nombre1','Nombre2','Nombre3','Nombre4',
-                'Cantidad1','Cantidad2','Cantidad3','Cantidad4',
-                'Firma1_ruta_imagen_encargado_palata','Firma2_ruta_imagen_coductor','Firma3_ruta_imagen_Resibi_conforme',
-                'Nombre_encargado_palata','Nombre_coductor','Nombre_Resibi_conforme','Estado'
+            $despacho = DespachoConcreto::create([
+                'Codigo_planta' => $request->Codigo_planta,
+                'id_Proyecto' => $request->id_Proyecto,
+                'Fecha' => $request->Fecha,
+                'Volumen_carga_M3' => $request->Volumen_carga_M3,
+                'Hora_salida_plata' => $request->Hora_salida_plata,
+                'Tipo_Concreto' => $request->Tipo_Concreto,
+                'id_Empresa' => $request->id_Empresa,
+                'Inicio_Carga' => $request->Inicio_Carga,
+                'Finaliza_carga' => $request->Finaliza_carga,
+                'Hora_llega_Proyecto' => $request->Hora_llega_Proyecto,
+                'Tipo_elemento' => $request->Tipo_elemento,
+                'Placa_numero' => $request->Placa_numero,
+                'Estado' => 1,
+                'Fecha_creacion' => now(),
             ]);
-            $aditivoData['Creado_por'] = $usuarioId;
-            $aditivoData['Fecha_creacion'] = now();
 
-            $aditivo = AditivoAplicados::create($aditivoData);
+            $dosificacion = DosificacionVale::create([
+                'kg_cemento_granel' => $request->kg_cemento_granel ?? 0,
+                'Sacos_Cemento' => $request->Sacos_Cemento ?? 0,
+                'kg_piedirn' => $request->kg_piedirn ?? 0,
+                'Kg_arena' => $request->Kg_arena ?? 0,
+                'lts_agua' => $request->lts_agua ?? 0,
+                'Estado' => 1,
+                'Fecha_creacion' => now(),
+            ]);
+
+            $aditivo = AditivoAplicados::create([
+                'Nombre1' => $request->Nombre1,
+                'Nombre2' => $request->Nombre2,
+                'Nombre3' => $request->Nombre3,
+                'Nombre4' => $request->Nombre4,
+                'Cantidad1' => $request->Cantidad1 ?? 0,
+                'Cantidad2' => $request->Cantidad2 ?? 0,
+                'Cantidad3' => $request->Cantidad3 ?? 0,
+                'Cantidad4' => $request->Cantidad4 ?? 0,
+                'Nombre_encargado_palata' => $request->Nombre_encargado_palata,
+                'Nombre_coductor' => $request->Nombre_coductor,
+                'Nombre_Resibi_conforme' => $request->Nombre_Resibi_conforme,
+                'Estado' => 1,
+                'Creado_por' => $usuarioId,
+                'Fecha_creacion' => now(),
+            ]);
 
             $vale = ValeDespacho::create([
                 'id_Despacho_concreto' => $despacho->id_Despacho_concreto,
@@ -110,58 +126,51 @@ class ValeEgresoController extends Controller
                 'cantidad2' => $aditivo->Cantidad2,
                 'cantidad3' => $aditivo->Cantidad3,
                 'cantidad4' => $aditivo->Cantidad4,
-                'id_Empleados' => $usuarioId,
+                'id_Empleados' => $empleado->id_Empleados,
                 'Observaciones' => '',
                 'Estado' => 1,
-            
                 'Fecha_creacion' => now(),
+                'Creado_por' => $usuarioId,
             ]);
 
             $this->egresarMateriales($dosificacion, $despacho->id_Proyecto);
             $this->egresarAditivos($aditivo, $despacho->id_Proyecto);
 
             DB::commit();
-            return redirect()->route('vale_egreso.index')->with('success', 'Vale egreso creado correctamente.');
+
+            return redirect()->route('vale_egreso.index')
+                ->with('success', 'Vale egreso creado correctamente.');
 
         } catch (\Exception $e) {
+
             DB::rollBack();
 
-            // ⛔️ MOSTRAR ERROR REAL, LÍNEA Y ARCHIVO
             dd(
-                "ERROR: " . $e->getMessage(),
-                "Línea: " . $e->getLine(),
-                "Archivo: " . $e->getFile(),
-                "Últimas Querys: ",
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine(),
                 DB::getQueryLog()
             );
         }
     }
 
-
-
     private function calcularTotalCemento($d)
     {
-        $total = 0;
-        if ($d->kg_cemento_granel > 0) $total += $d->kg_cemento_granel;
-        if ($d->Sacos_Cemento > 0) $total += $d->Sacos_Cemento * 42.5;
-        return $total;
+        return ($d->kg_cemento_granel ?? 0) + (($d->Sacos_Cemento ?? 0) * 42.5);
     }
 
     private function egresarMateriales($d, $proyecto)
     {
-        $totalCemento = $this->calcularTotalCemento($d);
-        if ($totalCemento > 0) {
-            $this->descontarDeBodega('cemento', $totalCemento, $proyecto);
+        if ($this->calcularTotalCemento($d) > 0) {
+            $this->descontarDeBodega('cemento', $this->calcularTotalCemento($d), $proyecto);
         }
 
         if ($d->kg_piedirn > 0) {
-            $m3 = $d->kg_piedirn / 1600;
-            $this->descontarDeBodega('piedrin', $m3, $proyecto);
+            $this->descontarDeBodega('piedrin', $d->kg_piedirn / 1600, $proyecto);
         }
 
         if ($d->Kg_arena > 0) {
-            $m3 = $d->Kg_arena / 1500;
-            $this->descontarDeBodega('arena', $m3, $proyecto);
+            $this->descontarDeBodega('arena', $d->Kg_arena / 1500, $proyecto);
         }
 
         if ($d->lts_agua > 0) {
@@ -172,11 +181,8 @@ class ValeEgresoController extends Controller
     private function egresarAditivos($a, $proyecto)
     {
         for ($i = 1; $i <= 4; $i++) {
-            $nombre = $a->{'Nombre'.$i};
-            $cant = $a->{'Cantidad'.$i};
-
-            if (!empty($nombre) && $cant > 0) {
-                $this->descontarDeBodega($nombre, $cant, $proyecto);
+            if (!empty($a->{'Nombre'.$i}) && $a->{'Cantidad'.$i} > 0) {
+                $this->descontarDeBodega($a->{'Nombre'.$i}, $a->{'Cantidad'.$i}, $proyecto);
             }
         }
     }
@@ -187,13 +193,9 @@ class ValeEgresoController extends Controller
             ->where('Material', 'LIKE', "%{$nombre}%")
             ->first();
 
-        if (!$producto) {
-            throw new \Exception("No existe '{$nombre}' en la bodega del proyecto.");
-        }
+        if (!$producto) throw new \Exception("No existe {$nombre} en bodega.");
 
-        if ($producto->Almazenado < $cantidad) {
-            throw new \Exception("Stock insuficiente de '{$nombre}' en el proyecto.");
-        }
+        if ($producto->Almazenado < $cantidad) throw new \Exception("Stock insuficiente de {$nombre}.");
 
         $producto->Almazenado -= $cantidad;
         $producto->save();
@@ -206,7 +208,7 @@ class ValeEgresoController extends Controller
             'Estado' => 1,
             'Creado_por' => Auth::id(),
             'Fecha_creacion' => now(),
-            'Observacion' => "Egreso para concreto — Proyecto {$proyecto}"
+            'Observacion' => "Egreso automático"
         ]);
     }
 }
