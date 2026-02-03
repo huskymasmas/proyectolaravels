@@ -10,7 +10,7 @@ class BodegaGeneral extends Model
     use HasFactory;
 
     // Nombre de la tabla si no sigue la convención plural de Laravel
-    protected $table = 'tbl_Bodega_general';
+    protected $table = 'tbl_bodega_general';
 
     // Clave primaria
     protected $primaryKey = 'id_Bodega_general';
