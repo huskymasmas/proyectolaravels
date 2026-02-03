@@ -219,7 +219,7 @@ class ReporteNominaController extends Controller
             'cantidad_dias' => 'required|integer|min:0'
         ]);
 
-        $empleado = DB::table('tbl_Empleados')
+        $empleado = DB::table('tbl_empleados')
             ->where('id_Empleados', $request->id_Empleados)
             ->first();
 
@@ -227,7 +227,7 @@ class ReporteNominaController extends Controller
             return back()->with('error', 'Empleado no encontrado.');
         }
 
-        $nomina = DB::table('tbl_Nomina')
+        $nomina = DB::table('tbl_nomina')
             ->where('id_Nomina', $empleado->id_Nomina)
             ->first();
 

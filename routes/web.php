@@ -192,7 +192,7 @@ Route::get('/reportes/nomina_detalle_empleados', [ReporteNominaDetalleController
 Route::resource('bodegaparaproyectos', BodegaParaProyectosController::class);
 Route::post('detalle/store', [ReporteNominaController::class, 'guardarDetalle'])
     ->name('detalle.store');
-
+ReporteNominaController
 Route::resource('nomina', NominaController::class)->middleware(['auth' , 'role:admin']);
 Route::resource('detalle_nomina', DetalleNominaController::class)->middleware(['auth' , 'role:admin']);
 Route::resource('registro_diario', RegistroDiarioController::class)->middleware(['auth' , 'role:admin']);
