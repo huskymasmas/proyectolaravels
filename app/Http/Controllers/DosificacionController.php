@@ -48,8 +48,8 @@ class DosificacionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_Tipo_dosificacion' => 'required|exists:tbl_Tipo_dosificacion,id_Tipo_dosificacion',
-            'id_Proyecto' => 'required|exists:tbl_Proyecto,id_Proyecto',
+            'id_Tipo_dosificacion' => 'required|exists:tbl_tipo_dosificacion,id_Tipo_dosificacion',
+            'id_Proyecto' => 'required|exists:tbl_proyecto,id_Proyecto',
             'Cemento' => 'required|numeric',
             'Arena' => 'required|numeric',
             'Pedrin' => 'required|numeric',
@@ -88,8 +88,8 @@ class DosificacionController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_Tipo_dosificacion' => 'required|exists:tbl_Tipo_dosificacion,id_Tipo_dosificacion',
-            'id_Proyecto' => 'required|exists:tbl_Proyecto,id_Proyecto',
+            'id_Tipo_dosificacion' => 'required|exists:tbl_tipo_dosificacion,id_Tipo_dosificacion',
+            'id_Proyecto' => 'required|exists:tbl_proyecto,id_Proyecto',
             'Cemento' => 'required|numeric',
             'Arena' => 'required|numeric',
             'Pedrin' => 'required|numeric',
