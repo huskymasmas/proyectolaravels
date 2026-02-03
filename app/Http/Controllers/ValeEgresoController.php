@@ -55,7 +55,7 @@ class ValeEgresoController extends Controller
                     'Placa_numero','Estado'
                 ]),
                 [
-                    'Creado_por' => $usuarioId,
+             
                     'Fecha_creacion' => now()
                 ]
             ));
@@ -65,7 +65,7 @@ class ValeEgresoController extends Controller
                     'kg_cemento_granel','Sacos_Cemento','kg_piedirn','Kg_arena','lts_agua','Estado'
                 ]),
                 [
-                    'Creado_por' => $usuarioId,
+                    
                     'Fecha_creacion' => now()
                 ]
             ));
@@ -86,7 +86,6 @@ class ValeEgresoController extends Controller
                 'id_Dosificacion_vale' => $dosificacion->id_Dosificacion_vale,
                 'id_Aditivo_aplicados' => $aditivo->id_Aditivo_aplicados,
                 'Estado' => 1,
-                'Creado_por' => $usuarioId,
                 'Fecha_creacion' => now(),
             ]);
 
@@ -114,7 +113,7 @@ class ValeEgresoController extends Controller
                 'id_Empleados' => $usuarioId,
                 'Observaciones' => '',
                 'Estado' => 1,
-                'Creado_por' => $usuarioId,
+            
                 'Fecha_creacion' => now(),
             ]);
 
@@ -138,20 +137,7 @@ class ValeEgresoController extends Controller
         }
     }
 
-    private function obtenerEmpleadoAutenticado()
-{
-    $usuarioId = Auth::id();
 
-    $empleado = DB::table('tbl_empleados')
-        ->where('id_Empleados', $usuarioId)
-        ->first();
-
-      if (!$empleado) {
-        throw new \Exception('No existe empleado con id = ' . $usuarioId);
-    }
-
-    return $empleado;
-}
 
     private function calcularTotalCemento($d)
     {
